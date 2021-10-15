@@ -12,7 +12,7 @@ float var(float* x, int size){
     for (int i = 0; i < size; ++i) {
         sum = sum + pow(x[i],2);
     }
-    return 1/size*sum - pow(meanCalc(x,size),2)
+    return 1/size*sum - pow(meanCalc(x,size),2);
 }
 
 //Helper method to calculate mean or expected value
