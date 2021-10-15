@@ -2,6 +2,8 @@
 #define ANOMALY_DETECTOR_ANOMALY_DETECTION_UTIL_H
 
 #endif //ANOMALY_DETECTOR_ANOMALY_DETECTION_UTIL_H
+// returns the variance of X and Y
+float var(float* x, int size);
 
 // returns the covariance of X and Y
 float cov(float* x, float* y, int size);
