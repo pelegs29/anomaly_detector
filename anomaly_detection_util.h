@@ -2,6 +2,10 @@
 #define ANOMALY_DETECTOR_ANOMALY_DETECTION_UTIL_H
 
 #endif //ANOMALY_DETECTOR_ANOMALY_DETECTION_UTIL_H
+
+// returns the value of the expected value of given X
+float meanCalc(float *x, int size);
+
 // returns the variance of X and Y
 float var(float* x, int size);
 
