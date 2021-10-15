@@ -1,7 +1,19 @@
 #include <iostream>
 #include "anomaly_detection_util.h"
+#include <cmath>
+#include <stdio.h>      /* printf */
+
 
 using namespace std;
+
+// returns the variance of X and Y
+float var(float* x, int size){
+    int sum =0;
+    for (int i = 0; i < size; ++i) {
+        sum = sum + pow(x[i],2);
+    }
+    return 1/size*sum - pow(meanCalc(x,size),2);
+}
 
 //Helper method to calculate mean or expected value
 float meanCalc(const float *x, int size) {

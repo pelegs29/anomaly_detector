@@ -1,4 +1,6 @@
-/home/pelegs29/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/212.5284.51/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEPENDS_USE_COMPILER=FALSE -G "CodeBlocks - Unix Makefiles" /home/pelegs29/Documents/ClionProjects/anomaly_detector
--- Configuring done
--- Generating done
--- Build files have been written to: /home/pelegs29/Documents/ClionProjects/anomaly_detector/cmake-build-debug
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/nadavyakobovich/Documents/udemy/שונות/anomaly_detector
+CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
+  CMake 3.20 or higher is required.  You are running version 3.17.3
+
+
+-- Configuring incomplete, errors occurred!
