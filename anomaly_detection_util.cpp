@@ -109,12 +109,49 @@ int main() {
     else
         cout << " Failed!" << endl;
 
-    Point points[] = {Point(1.47, 52.21), Point(1.50, 53.12), Point(1.52, 54.48), Point(1.55, 55.84),
-                      Point(1.57, 57.20), Point(1.60, 58.57), Point(1.63, 59.93), Point(1.65, 61.29),
-                      Point(1.68, 63.11), Point(1.70, 64.47), Point(1.73, 66.28), Point(1.75, 68.10),
-                      Point(1.78, 69.92), Point(1.80, 72.19), Point(1.83, 74.46)};
-    Point *pointPointer = points;
-    Line lineResult = linear_reg(pointPointer, 15);
+    //test for line
+
+    cout << "test for Liner:" << endl << "Test 1:";
+
+      //from wiki https://en.wikipedia.org/wiki/Simple_linear_regression
+        Point* points1[15];
+        points1[0] = new Point(1.47, 52.21);
+        points1[1] = new Point(1.50, 53.12);
+        points1[2] = new Point(1.52, 54.48);
+        points1[3] = new Point(1.55, 55.84);
+        points1[4] = new Point(1.57, 57.20);
+        points1[5] = new Point(1.60, 58.57);
+        points1[6] = new Point(1.63, 59.93);
+        points1[7] = new Point(1.65, 61.29);
+        points1[8] = new Point(.68, 63.11);
+        points1[9] = new Point(1.70, 64.47);
+        points1[10] = new Point(1.73, 66.28);
+        points1[11] = new Point(1.75, 68.10);
+        points1[12] = new Point(1.78, 69.92);
+        points1[13] = new Point(1.80, 72.19);
+        points1[14] = new Point(1.83, 74.46);
+
+        Line lineResult1 = linear_reg(points1, 5);
+        if (isEqual(lineResult1.a, -39.7468) && isEqual(lineResult1.b,61.6746))
+            cout << " Passed!" << endl;
+        else
+            cout << " Failed!" << endl;
+
+
+//from https://www.andrews.edu/~calkins/math/edrm611/edrm06.htm
+
+    cout << " test 2:" << endl;
+    Point* points2[5];
+    points2[0] = new Point(1, 4);
+    points2[1] = new Point(3, 2);
+    points2[2] = new Point(4, 1);
+    points2[3] = new Point(5, 0);
+    points2[4] = new Point(8, 0);
+    Line lineResult2 =   linear_reg(points2, 5);
+    if (isEqual(lineResult2.a, -05746) && isEqual(lineResult2.b,3.8134))
+        cout << " Passed!" << endl;
+    else
+        cout << " Failed!" << endl;
 
     return 0;
 }
