@@ -76,7 +76,7 @@ float dev(Point p,Point** points, int size){
 // returns the deviation between point p and the line
 float dev(Point p,Line l){
     // the Y val of point that appear in the line with the x val of the point
-    float pointY = l.a*p.x + l.b;
+    float pointY = l.f(p.x);
     float yDeviation = abs(pointY - p.y);
     return yDeviation;
 }
@@ -176,5 +176,14 @@ int main() {
         cout << " Failed!" << endl;
     else
         cout << " Passed!" << endl;
+
+    cout << " test 2" << endl;
+    Line* lineDev2 = new Line(-1.5,10);
+    Point* pDev2= new Point(4, 10);
+    if (dev(*pDev2, *lineDev2) != 6)
+        cout << " Failed!" << endl;
+    else
+        cout << " Passed!" << endl;
+
     return 0;
 }
