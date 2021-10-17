@@ -66,6 +66,21 @@ Line linear_reg(Point **points, int size) {
     return *line;
 }
 
+// returns the deviation between point p and the line equation of the points
+float dev(Point p,Point** points, int size){
+    Line line = linear_reg(points,size);
+    return dev(p,line);
+}
+
+
+// returns the deviation between point p and the line
+float dev(Point p,Line l){
+    // the Y val of point that appear in the line with the x val of the point
+    float pointY = l.a*p.x + l.b;
+    float yDeviation = abs(pointY - p.y);
+    return yDeviation;
+}
+
 int main() {
     cout << "test for cov:" << endl << "Test 1:";
     float X[] = {5, 20, 40, 80, 100};
@@ -153,5 +168,13 @@ int main() {
     else
         cout << " Failed!" << endl;
 
+
+    cout << "test for dev:" << endl << "Test 1:";
+    Line* lineDev = new Line(2,3);
+    Point* pDev = new Point(2, 5);
+    if (dev(*pDev, *lineDev) != 2)
+        cout << " Failed!" << endl;
+    else
+        cout << " Passed!" << endl;
     return 0;
 }
