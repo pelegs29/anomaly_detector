@@ -16,11 +16,11 @@ using namespace std;
 //}
 
 float var(float *x, int size) {
-    double sum = 0;
+    float sum = 0;
     for (int i = 0; i < size; ++i) {
         sum = sum + (x[i] * x[i]);
     }
-    double middleSum = sum / size;
+    float middleSum = sum / (float) size;
     return middleSum - (meanCalc(x, size) * meanCalc(x, size));
 }
 
@@ -30,7 +30,7 @@ float meanCalc(const float *x, int size) {
     for (int i = 0; i < size; ++i) {
         sum = sum + x[i];
     }
-    return sum / size;
+    return sum / (float) size;
 }
 
 float cov(float *x, float *y, int size) {
