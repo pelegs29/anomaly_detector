@@ -12,10 +12,6 @@ using namespace std;
 
 //Helper method to calculate mean or expected value
 float avg(float *x, int size) {
-    if (size < 1 || x == nullptr) {
-        cout << "input error";
-        return -1;
-    }
     float sum = 0;
     for (int i = 0; i < size; ++i) {
         sum = sum + x[i];
@@ -25,10 +21,6 @@ float avg(float *x, int size) {
 
 //method to calculate variance
 float var(float *x, int size) {
-    if (size < 1 || x == nullptr) {
-        cout << "input error";
-        return -1;
-    }
     float sum = 0;
     float meanResult = avg(x, size);
     for (int i = 0; i < size; ++i) {
@@ -39,10 +31,6 @@ float var(float *x, int size) {
 
 //method to calculate covariance
 float cov(float *x, float *y, int size) {
-    if (size < 1 || x == nullptr || y == nullptr) {
-        cout << "input error";
-        return -1;
-    }
     float sum = 0;
     for (int i = 0; i < size; ++i) {
         sum = sum + ((x[i] - avg(x, size)) * (y[i] - avg(y, size)));
@@ -52,10 +40,6 @@ float cov(float *x, float *y, int size) {
 
 //method to calculate pearson
 float pearson(float *x, float *y, int size) {
-    if (size < 1 || x == nullptr || y == nullptr) {
-        cout << "input error";
-        return -1;
-    }
     float covResult = cov(x, y, size);
     float xDeviation = sqrt(var(x, size));
     float yDeviation = sqrt(var(y, size));
@@ -64,10 +48,6 @@ float pearson(float *x, float *y, int size) {
 
 //method to calculate linear_reg
 Line linear_reg(Point **points, int size) {
-    if (size < 1 || points == nullptr) {
-        cout << "input error";
-        exit(-1);
-    }
     float x[size], y[size];
     for (int i = 0; i < size; ++i) {
         x[i] = points[i]->x;
@@ -83,10 +63,6 @@ Line linear_reg(Point **points, int size) {
 
 // returns the deviation between point p and the line equation of the points
 float dev(Point p, Point **points, int size) {
-    if (size < 1 || points == nullptr) {
-        cout << "input error";
-        return -1;
-    }
     Line line = linear_reg(points, size);
     return dev(p, line);
 }
