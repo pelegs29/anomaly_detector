@@ -8,4 +8,10 @@ set(SOURCE_FILES main.cpp)
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(anomaly_detector
         anomaly_detection_util.cpp
-        anomaly_detection_util.h)
+        anomaly_detection_util.h
+        AnomalyDetector.h
+        MainTrain.cpp
+        SimpleAnomalyDetector.h
+        SimpleAnomalyDetector.cpp
+        timeseries.cpp
+        timeseries.h)
