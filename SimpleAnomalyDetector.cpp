@@ -12,6 +12,7 @@ SimpleAnomalyDetector::~SimpleAnomalyDetector() {
 
 
 void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts){
+    // do stuff
 	// TODO Auto-generated destructor stub
 }
 
