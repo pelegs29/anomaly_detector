@@ -15,6 +15,9 @@ struct correlatedFeatures{
 	float corrlation;
 	Line lin_reg;
 	float threshold;
+
+    correlatedFeatures(string feature1, string feature2, float corrlation, const Line &linReg,
+                       float threshold);
 };
 
 
