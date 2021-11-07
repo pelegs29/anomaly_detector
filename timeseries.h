@@ -17,10 +17,11 @@ using namespace std;
 class TimeSeries{
 
 
-public:
+private:
+    //TODO: maybe delete category names
     vector<string>* categoryNames;
     vector<pair<string,vector<float>>> data;
-
+public:
     //function
     vector<pair<string,vector<float>>> read_csv(const string& filename) const;
     //constructor

@@ -21,7 +21,14 @@ SimpleAnomalyDetector::~SimpleAnomalyDetector() {
 
 //method to create vector of correlatedFeatures in the TimeSeries given
 void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
-    vector<correlatedFeatures> correlatedFound;
+    vector <correlatedFeatures> correlatedFound;
+    for (int i = 0; i < ts.getData().size(); ++i) {
+        float currentMax = THRESHOLD;
+        float pResult;
+
+
+    }
+
 
     auto outerIt = ts.data.begin();
     auto innerIt = outerIt++;
@@ -48,7 +55,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
     }
 }
 
-vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
+vector <AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
     // TODO Auto-generated destructor stub
 }
 
