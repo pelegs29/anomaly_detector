@@ -111,7 +111,7 @@ float TimeSeries::getInfo(float time, string category) const {
         cout<< "Error , no cant find the index please check input to Getinfo function" << endl;
         return -1;
     }
-    for (int i = 1; i < data.size(); ++i) {
+    for (int i = 0; i < data.size(); ++i) {
         string categoryName = this->data[i].first;
         if (categoryName == category){
             return this->data[i].second[indexData];
