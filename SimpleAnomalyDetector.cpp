@@ -74,10 +74,10 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts){
     vector<AnomalyReport> vectorReport;
     vector<correlatedFeatures> correlVector = this->getNormalModel();
     //vector of the time of the data that we need to check
-    vector<float> timeVector = ts.data[0].second;
+    vector<float> timeVector = ts.getData()[0].second;
     //move row by row and check the data
-    for (int row = 0; row <  ts.data[0].second.size(); ++row) {
-        for (auto correlatedFeature : correlVector) {
+    for (int row = 0; row <  ts.getData()[0].second.size(); ++row) {
+        for (const auto& correlatedFeature : correlVector) {
             //get the correlatedFeatures that we check now (the J item in the vector)
             string features1 = correlatedFeature.feature1;
             string features2 = correlatedFeature.feature2;
