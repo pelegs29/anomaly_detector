@@ -118,6 +118,7 @@ float TimeSeries::getInfo(float time, string category) const {
         }
     }
     //not found any mach!
+    cout<< "Error , no cant find the index please check input to Getinfo function" << endl;
     return -1;
 
 }
