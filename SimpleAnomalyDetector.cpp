@@ -22,9 +22,8 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts){
     vector<float> timeVector = ts.data[0].second;
     //move row by row and check the data
     for (int row = 0; row <  ts.data[0].second.size(); ++row) {
-        for (int j = 0; j < correlVector.size(); ++j) {
+        for (auto correlatedFeature : correlVector) {
             //get the correlatedFeatures that we check now (the J item in the vector)
-            correlatedFeatures correlatedFeature = correlVector[j];
             string features1 = correlatedFeature.feature1;
             string features2 = correlatedFeature.feature2;
             //get the data of the features in the time that we check from the data ts
@@ -41,5 +40,6 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts){
             }
         }
     }
+    return vectorReport;
 }
 
