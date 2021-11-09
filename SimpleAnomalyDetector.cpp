@@ -41,7 +41,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
     vector<pair<string, vector<float>>> data = ts.getData();
     // flag -> if no correlativeDuo found
     int correlativeDuo = -1;
-    for (int i = 0; i < data.size(); ++i) {
+    for (int i = 0; i < data.size()-1; ++i) {
         float currentMax = THRESHOLD;
         //pResult will hold the current correlation between feature i and j
         float pResult;
@@ -61,6 +61,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
             Point **points_arr = createPointsArr(&data[i].second[0],
                                                  &data[correlativeDuo].second[0], featureSize);
             Line linearReg = linear_reg(points_arr, featureSize);
+            //TODO : for each point chech the REAL threshold
             correlatedFeatures duoFound = correlatedFeatures(data[i].first,
                                                              data[correlativeDuo].first,
                                                              currentMax, linearReg, THRESHOLD);
