@@ -48,8 +48,7 @@ public:
 
     //Destructors
     ~TimeSeries(){
-        free(&this->data);
-        free(&this->categoryNames);
+        free(this->categoryNames);
     }
 };
 
