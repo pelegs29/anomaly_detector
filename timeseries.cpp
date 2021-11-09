@@ -104,7 +104,7 @@ vector<pair<string,vector<float>>> TimeSeries::read_csv(const string& filename) 
     return dataBuild;
 }
 
-float TimeSeries::getinfo(float time, const string& category){
+float TimeSeries::getinfo(float time, string category){
     //get the index of the time that we need in the vector
     int indexData = findIndexVector(this->data[0].second,time);
     if (indexData == -1){

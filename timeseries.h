@@ -43,7 +43,7 @@ public:
         return vector.size();
 
     }
-    float getinfo(float time, const string& category);
+    float getinfo(float time, string category);
 
     //Destructors
     ~TimeSeries(){
