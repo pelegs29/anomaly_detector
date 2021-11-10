@@ -103,7 +103,12 @@ vector<pair<string,vector<float>>> TimeSeries::read_csv(const string& filename) 
     myFile.close();
     return dataBuild;
 }
-
+/**
+ *
+ * @param time the time that the information that we need  happened
+ * @param category the features that we need to get his information in the time
+ * @return float - the info of the features by the time
+ */
 float TimeSeries::getInfo(float time, string category) const {
     //get the index of the time that we need in the vector
     int indexData = findIndexVector(this->data[0].second,time);
@@ -122,15 +127,3 @@ float TimeSeries::getInfo(float time, string category) const {
     return -1;
 
 }
-//
-//int main() {
-//    cout << "Hello World!";
-//    TimeSeries& timeSeries = *new TimeSeries("test1.csv");
-//    cout << timeSeries.getFeatureSizeColum() <<endl;
-//    float check =timeSeries.getinfo(0.2,"Altitude (feet)");
-//    cout<< check << endl;
-//
-//
-//
-//    return 0;
-//}

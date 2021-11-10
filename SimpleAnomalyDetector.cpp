@@ -80,7 +80,11 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
         }
     }
 }
-
+/**
+ *
+ * @param ts a data contain new information that need to detect variant
+ * @return vector of anomalyReport contain the time and the 2 features involve in the variant
+ */
 vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
     vector<AnomalyReport> vectorReport;
     vector<correlatedFeatures> correlVector = this->getNormalModel();
