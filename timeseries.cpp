@@ -23,7 +23,7 @@ vector<float> fromLineToVector(const string& line){
     return vect;
 }
 /**
- *
+ * return the index of float in the vector
  * @param vector contain value
  * @param time the index of the time value in the vector
  * @return the index of the value of the vector
@@ -37,7 +37,7 @@ int findIndexVector(vector<float> vector, float time){
     return -1;
 }
 /**
- *
+ * read a cvs file, and enter the information to pair of category and its value
  * @param filename contain the name of the csv file
  * @return vector contain of pair represents the category and its value
  */
@@ -104,7 +104,7 @@ vector<pair<string,vector<float>>> TimeSeries::read_csv(const string& filename) 
     return dataBuild;
 }
 /**
- *
+ *  return information form the data by time(number of row) and category
  * @param time the time that the information that we need  happened
  * @param category the features that we need to get his information in the time
  * @return float - the info of the features by the time
