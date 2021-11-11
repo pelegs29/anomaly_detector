@@ -1,9 +1,17 @@
 #include <memory>
 #include "SimpleAnomalyDetector.h"
 
-#define CORR_THRESHOLD 0.7
+#define CORR_THRESHOLD 0.9
 using namespace std;
 
+/**
+ * default constructor for correlatedFeatures struct
+ * @param feature1 string of the first feature of the correlated couple
+ * @param feature2 string of the first feature of the correlated couple
+ * @param corrlation the calculated correlation between them
+ * @param linReg Line of the linear regression
+ * @param threshold float representing the maximum value that isn't anomaly
+ */
 correlatedFeatures::correlatedFeatures(string feature1, string feature2, float corrlation,
                                        const Line &linReg, float threshold) :
         feature1(move(feature1)), feature2(move(feature2)),
@@ -12,14 +20,20 @@ correlatedFeatures::correlatedFeatures(string feature1, string feature2, float c
 
 //constructor
 SimpleAnomalyDetector::SimpleAnomalyDetector() {
-    // TODO Auto-generated constructor stub
+    vector<correlatedFeatures> correlatedFeatures;
+    this->cf = correlatedFeatures;
 }
 
 //destructor
-SimpleAnomalyDetector::~SimpleAnomalyDetector() {
-    // TODO Auto-generated destructor stub
-}
+SimpleAnomalyDetector::~SimpleAnomalyDetector() {}
 
+/**
+ * method to calculated the max deviation between array of points and regression line
+ * @param reg given regression Line
+ * @param points_arr given array of Points
+ * @param size given size of points_arr
+ * @return float representation of the max deviation found
+ */
 float maxDeviation(Line reg, Point **points_arr, int size) {
     float maxDev = 0;
     for (int i = 0; i < size; ++i) {
@@ -30,6 +44,14 @@ float maxDeviation(Line reg, Point **points_arr, int size) {
     return maxDev;
 }
 
+/**
+ * method to create a pointer to an array of Point pointers from two arrays,
+ * one representing the x values and the other the y values accordingly.
+ * @param x given array of float x values
+ * @param y given array of float y values
+ * @param size given size of x or y array
+ * @return a pointer to an array of Point pointers
+ */
 Point **createPointsArr(float *x, float *y, int size) {
     auto **points_arr = new Point *[size];
     for (int i = 0; i < size; ++i) {
@@ -38,6 +60,11 @@ Point **createPointsArr(float *x, float *y, int size) {
     return points_arr;
 }
 
+/**
+ * simple method that free the allocated points array.
+ * @param arr given pointer to the Points array to be freed
+ * @param size given arr size
+ */
 void freePointsArr(Point **arr, int size) {
     for (int i = 0; i < size; ++i) {
         delete arr[i];
@@ -45,7 +72,10 @@ void freePointsArr(Point **arr, int size) {
     delete arr;
 }
 
-//method to create vector of correlatedFeatures in the TimeSeries given
+/**
+ * method to create vector of correlatedFeatures in the TimeSeries given
+ * @param ts given TimeSeries data to be learned from.
+ */
 void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
     vector<correlatedFeatures> correlatedFound;
     vector<pair<string, vector<float>>> data = ts.getData();
@@ -80,6 +110,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
         }
     }
 }
+
 /**
  *
  * @param ts a data contain new information that need to detect variant
