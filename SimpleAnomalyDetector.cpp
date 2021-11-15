@@ -37,7 +37,8 @@ SimpleAnomalyDetector::~SimpleAnomalyDetector() {}
 float maxDeviation(Line reg, Point **points_arr, int size) {
     float maxDev = 0;
     for (int i = 0; i < size; ++i) {
-        float currentDev = dev(*(points_arr[i]), reg);
+        float currentDev = abs(points_arr[i]->y - reg.f(points_arr[i]->x));
+        //float currentDev = dev(*(points_arr[i]), reg);
         if (currentDev > maxDev)
             maxDev = currentDev;
     }
@@ -101,7 +102,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
             Point **points_arr = createPointsArr(&data[i].second[0],
                                                  &data[correlativeDuo].second[0], featureSize);
             Line linearReg = linear_reg(points_arr, featureSize);
-            float regThreshold = maxDeviation(linearReg, points_arr, featureSize) * 1.1f;
+            float regThreshold = maxDeviation(linearReg, points_arr, featureSize) * 1.1;
             correlatedFeatures duoFound = correlatedFeatures(data[i].first,
                                                              data[correlativeDuo].first,
                                                              currentMax, linearReg, regThreshold);
@@ -135,8 +136,9 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
             float devCheck = dev(featuresPoint, correlatedFeature.lin_reg);
             if (devCheck > correlatedFeature.threshold) {
                 //there is a variant that we found
-                //creat new report and add it to the reportvector;
-                AnomalyReport anomalyReport = AnomalyReport(features1 + "-" + features2, row + 1);
+                //creat new report and add it to the report vector;
+                string report = features1 + "-" + features2;
+                AnomalyReport anomalyReport = AnomalyReport(report, row + 1);
                 vectorReport.push_back(anomalyReport);
             }
         }

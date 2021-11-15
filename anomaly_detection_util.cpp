@@ -14,9 +14,9 @@ using namespace std;
 float avg(float *x, int size) {
     float sum = 0;
     for (int i = 0; i < size; ++i) {
-        sum = sum + x[i];
+        sum += x[i];
     }
-    return sum / (float) size;
+    return sum / size;
 }
 
 //method to calculate variance
@@ -24,18 +24,19 @@ float var(float *x, int size) {
     float sum = 0;
     float meanResult = avg(x, size);
     for (int i = 0; i < size; ++i) {
-        sum = sum + ((x[i] - meanResult) * (x[i] - meanResult));
+        sum += x[i] * x[i];
     }
-    return sum / (float) size;
+    return sum / size - meanResult * meanResult;
 }
 
 //method to calculate covariance
 float cov(float *x, float *y, int size) {
     float sum = 0;
     for (int i = 0; i < size; ++i) {
-        sum = sum + ((x[i] - avg(x, size)) * (y[i] - avg(y, size)));
+        sum += x[i] * y[i];
     }
-    return sum / (float) size;
+    sum = sum / size;
+    return sum - avg(x, size) * avg(y, size);
 }
 
 //method to calculate pearson
@@ -54,9 +55,7 @@ Line linear_reg(Point **points, int size) {
         y[i] = points[i]->y;
     }
     float a = cov(x, y, size) / var(x, size);
-    float avgY = avg(y, size);
-    float avgX = avg(x, size);
-    float b = avgY - a * avgX;
+    float b = avg(y, size) - a * (avg(x, size));
     Line *line = new Line(a, b);
     return *line;
 }
@@ -72,7 +71,5 @@ float dev(Point p, Line l) {
     // the Y val of point that appear in the line with the x val of the point
     float pointY = l.f(p.x);
     float yDeviation = pointY - p.y;
-    if (yDeviation < 0)
-        return -1.0f * yDeviation;
-    return yDeviation;
+    return fabs(yDeviation);
 }
