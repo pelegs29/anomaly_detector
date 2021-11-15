@@ -101,7 +101,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
             Point **points_arr = createPointsArr(&data[i].second[0],
                                                  &data[correlativeDuo].second[0], featureSize);
             Line linearReg = linear_reg(points_arr, featureSize);
-            float regThreshold = maxDeviation(linearReg, points_arr, featureSize) * 1.2f;
+            float regThreshold = maxDeviation(linearReg, points_arr, featureSize) * 1.1f;
             correlatedFeatures duoFound = correlatedFeatures(data[i].first,
                                                              data[correlativeDuo].first,
                                                              currentMax, linearReg, regThreshold);
