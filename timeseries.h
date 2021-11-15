@@ -18,15 +18,14 @@ class TimeSeries{
 
 
 private:
-    //TODO: maybe delete category names
-    vector<string>* categoryNames;
+    vector<string> categoryNames;
     vector<pair<string,vector<float>>> data;
 public:
     //function
     vector<pair<string,vector<float>>> read_csv(const string& filename) const;
     //constructor
     explicit TimeSeries(const char* CSVfileName){
-        this->categoryNames = new vector<string>;
+        this->categoryNames;
         this->data =  read_csv(CSVfileName);
 
     }
@@ -48,7 +47,6 @@ public:
 
     //Destructors
     ~TimeSeries(){
-        free(this->categoryNames);
     }
 };
 

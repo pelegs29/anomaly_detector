@@ -72,7 +72,7 @@ int main() {
     //	A-C: y=a1*x+b1
     //	B-D: y=a2*x+b2
 
-    //generateTrainCSV(a1, b1, a2, b2);
+    generateTrainCSV(a1, b1, a2, b2);
     TimeSeries ts("trainFile1.csv");
     SimpleAnomalyDetector ad;
     ad.learnNormal(ts);
@@ -89,7 +89,7 @@ int main() {
     // test the anomaly detector: (60 points)
     // one simply anomaly is injected to the data
     int anomaly = 5 + rand() % 90; // one anomaly injected in a random time step
-    //generateTestCSV(a1, b1, a2, b2, anomaly);
+    generateTestCSV(a1, b1, a2, b2, anomaly);
     TimeSeries ts2("testFile1.csv");
     vector<AnomalyReport> r = ad.detect(ts2);
 

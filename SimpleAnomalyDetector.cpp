@@ -54,7 +54,7 @@ float maxDeviation(Line reg, Point **points_arr, int size) {
  * @return a pointer to an array of Point pointers
  */
 Point **createPointsArr(float *x, float *y, int size) {
-    auto **points_arr = new Point *[size];
+    Point **points_arr = new Point *[size];
     for (int i = 0; i < size; ++i) {
         points_arr[i] = new Point(x[i], y[i]);
     }
@@ -70,7 +70,7 @@ void freePointsArr(Point **arr, int size) {
     for (int i = 0; i < size; ++i) {
         delete arr[i];
     }
-    delete arr;
+    delete[] arr;
 }
 
 /**
