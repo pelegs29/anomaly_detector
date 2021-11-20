@@ -45,7 +45,7 @@ public:
 
     }
     float getInfo(float time, string category) const;
-
+    float getInfoByRow(int row, string category) const;
     //Destructors
     ~TimeSeries(){
         free(this->categoryNames);

@@ -101,7 +101,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
             Point **points_arr = createPointsArr(&data[i].second[0],
                                                  &data[correlativeDuo].second[0], featureSize);
             Line linearReg = linear_reg(points_arr, featureSize);
-            float regThreshold = maxDeviation(linearReg, points_arr, featureSize) * 1.2f;
+            float regThreshold = maxDeviation(linearReg, points_arr, featureSize) * 1.1f;
             correlatedFeatures duoFound = correlatedFeatures(data[i].first,
                                                              data[correlativeDuo].first,
                                                              currentMax, linearReg, regThreshold);
@@ -117,23 +117,21 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
  * @return vector of anomalyReport contain the time and the 2 features involve in the variant
  */
 vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
+    //the number of row data in ts
+    int rowSize = ts.getData()[0].second.size(); // just get the number of row of the first float vector in ts
     vector<AnomalyReport> vectorReport;
     vector<correlatedFeatures> correlVector = this->getNormalModel();
-    //vector of the time of the data that we need to check
-    vector<float> timeVector = ts.getData()[0].second;
-    //move row by row and check the data
-    for (int row = 0; row < ts.getData()[0].second.size(); ++row) {
-        for (const auto &correlatedFeature: correlVector) {
-            //get the correlatedFeatures that we check now (the J item in the vector)
-            string features1 = correlatedFeature.feature1;
-            string features2 = correlatedFeature.feature2;
+    for (auto & correlatedDuo : correlVector) {
+        //get the correlatedFeatures that we check now (the J item in the vector)
+        string features1 = correlatedDuo.feature1;
+        string features2 = correlatedDuo.feature2;
+        for (int row = 0; row < rowSize; row++) {
             //get the data of the features in the time that we check from the data ts
-            float features1Data = ts.getInfo(timeVector[row], features1);
-            float features2Data = ts.getInfo(timeVector[row], features2);
-            //creat a point contain the data from fracture 1 and 2, and check if it is bigger form the threshold
+            float features1Data = ts.getInfoByRow(row, features1);
+            float features2Data = ts.getInfoByRow(row, features2);
             Point featuresPoint = Point(features1Data, features2Data);
-            float devCheck = dev(featuresPoint, correlatedFeature.lin_reg);
-            if (devCheck > correlatedFeature.threshold) {
+            float devCheck = dev(featuresPoint, correlatedDuo.lin_reg);
+            if (devCheck > correlatedDuo.threshold) {
                 //there is a variant that we found
                 //creat new report and add it to the reportvector;
                 AnomalyReport anomalyReport = AnomalyReport(features1 + "-" + features2, row + 1);

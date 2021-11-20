@@ -125,5 +125,23 @@ float TimeSeries::getInfo(float time, string category) const {
     //not found any mach!
     cout<< "Error , no cant find the index please check input to Getinfo function" << endl;
     return -1;
+}
+/**
+ * reutrn info form the data by row and category
+ * @param row the row the info need to be
+ * @param category the cat' that we want to get the info from
+ * @return
+ */
+float TimeSeries::getInfoByRow(int row, string category) const {
+
+    for (int i = 0; i < data.size(); ++i) {
+        string categoryName = this->data[i].first;
+        if (categoryName == category){
+            return this->data[i].second[row];
+        }
+    }
+    //not found any mach!
+    cout<< "Error , no cant find the index please check input to Getinfo function" << endl;
+    return -1;
 
 }
