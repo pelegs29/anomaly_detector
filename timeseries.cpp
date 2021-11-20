@@ -47,7 +47,7 @@ vector<pair<string,vector<float>>> TimeSeries::read_csv(const string& filename) 
     vector<pair<string,vector<float>>> dataBuild;
 
     //vector contain the column names
-    vector<string>& idName = *this->categoryNames;
+    vector<string> idName = this->categoryNames;
 
     // Create an input filestream
     ifstream myFile(filename);

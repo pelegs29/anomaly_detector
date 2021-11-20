@@ -37,7 +37,8 @@ SimpleAnomalyDetector::~SimpleAnomalyDetector() {}
 float maxDeviation(Line reg, Point **points_arr, int size) {
     float maxDev = 0;
     for (int i = 0; i < size; ++i) {
-        float currentDev = dev(*(points_arr[i]), reg);
+        float currentDev = abs(points_arr[i]->y - reg.f(points_arr[i]->x));
+        //float currentDev = dev(*(points_arr[i]), reg);
         if (currentDev > maxDev)
             maxDev = currentDev;
     }
@@ -53,7 +54,7 @@ float maxDeviation(Line reg, Point **points_arr, int size) {
  * @return a pointer to an array of Point pointers
  */
 Point **createPointsArr(float *x, float *y, int size) {
-    auto **points_arr = new Point *[size];
+    Point **points_arr = new Point *[size];
     for (int i = 0; i < size; ++i) {
         points_arr[i] = new Point(x[i], y[i]);
     }
@@ -69,7 +70,7 @@ void freePointsArr(Point **arr, int size) {
     for (int i = 0; i < size; ++i) {
         delete arr[i];
     }
-    delete arr;
+    delete[] arr;
 }
 
 /**
@@ -101,7 +102,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
             Point **points_arr = createPointsArr(&data[i].second[0],
                                                  &data[correlativeDuo].second[0], featureSize);
             Line linearReg = linear_reg(points_arr, featureSize);
-            float regThreshold = maxDeviation(linearReg, points_arr, featureSize) * 1.1f;
+            float regThreshold = maxDeviation(linearReg, points_arr, featureSize) * 1.1;
             correlatedFeatures duoFound = correlatedFeatures(data[i].first,
                                                              data[correlativeDuo].first,
                                                              currentMax, linearReg, regThreshold);
