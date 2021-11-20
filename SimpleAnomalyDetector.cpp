@@ -38,7 +38,6 @@ float maxDeviation(Line reg, Point **points_arr, int size) {
     float maxDev = 0;
     for (int i = 0; i < size; ++i) {
         float currentDev = abs(points_arr[i]->y - reg.f(points_arr[i]->x));
-        //float currentDev = dev(*(points_arr[i]), reg);
         if (currentDev > maxDev)
             maxDev = currentDev;
     }
