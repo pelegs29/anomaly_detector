@@ -1,3 +1,6 @@
+
+//* Author: 318509700 Peleg
+//*         207984956 Nadav
 #include <memory>
 #include "SimpleAnomalyDetector.h"
 
@@ -127,11 +130,15 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
         string features1 = correlatedDuo.feature1;
         string features2 = correlatedDuo.feature2;
         for (int row = 0; row < rowSize; row++) {
+            if (row == 98){
+                int u= 5;
+            }
             //get the data of the features in the time that we check from the data ts
             float features1Data = ts.getInfoByRow(row, features1);
             float features2Data = ts.getInfoByRow(row, features2);
             Point featuresPoint = Point(features1Data, features2Data);
-            float devCheck = dev(featuresPoint, correlatedDuo.lin_reg);
+            //float devCheck = dev(featuresPoint, correlatedDuo.lin_reg);
+            float devCheck =abs(featuresPoint.y - correlatedDuo.lin_reg.f(featuresPoint.x));
             if (devCheck > correlatedDuo.threshold) {
                 //there is a variant that we found
                 //creat new report and add it to the reportvector;

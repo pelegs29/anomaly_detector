@@ -1,4 +1,6 @@
 
+//* Author: 318509700 Peleg
+//*         207984956 Nadav
 
 #ifndef ANOMALYDETECTOR_H_
 #define ANOMALYDETECTOR_H_

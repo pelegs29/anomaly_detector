@@ -1,5 +1,6 @@
 
-
+//* Author: 318509700 Peleg
+//*         207984956 Nadav
 #ifndef TIMESERIES_H_
 #define TIMESERIES_H_
 
