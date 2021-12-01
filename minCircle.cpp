@@ -1,30 +1,37 @@
+//* Author: 318509700 Peleg
+//*         207984956 Nadav
+
 #include "minCircle.h"
 #include <algorithm>
 #include <assert.h>
-#include <iostream>
 #include <math.h>
 #include <vector>
 #include "anomaly_detection_util.h"
 
 
-// Function to return the euclidean distance
-// between two points
+/**
+ Function to return the euclidean distance
+ between two points
+ **/
 float dist(const Point& a, const Point& b)
 {
     return sqrt(pow(a.x - b.x, 2)
                 + pow(a.y - b.y, 2));
 }
-
-// Function to check whether a point lies inside
-// or on the boundaries of the circle
+/**
+ Function to check whether a point lies inside
+ or on the boundaries of the circle
+ **/
 bool is_inside(const Circle& c, const Point& p)
 {
     return dist(c.center, p) <= c.radius;
 }
 
-// The following two functions are used
-// To find the equation of the circle when
-// three points are given.
+/**
+    The following two functions are used
+    To find the equation of the circle when
+    three points are given.
+ **/
 
 // Helper method to get a circle defined by 3 points
 Point get_circle_center(float bx, float by,
@@ -36,9 +43,10 @@ Point get_circle_center(float bx, float by,
     return { (cy * B - by * C) / (2 * D),
              (bx * C - cx * B) / (2 * D) };
 }
-
-// Function to return a unique circle that
-// intersects three points
+/**
+ Function to return a unique circle that
+ intersects three points
+ **/
 Circle circle_from(const Point& A, const Point& B,
                    const Point& C)
 {
@@ -49,9 +57,10 @@ Circle circle_from(const Point& A, const Point& B,
     I.y += A.y;
     return { I, dist(I, A) };
 }
-
-// Function to return the smallest circle
-// that intersects 2 points
+/**
+ Function to return the smallest circle
+ that intersects 2 points
+ **/
 Circle circle_from(const Point& A, const Point& B)
 {
     // Set the center to be the midpoint of A and B
@@ -60,9 +69,10 @@ Circle circle_from(const Point& A, const Point& B)
     // Set the radius to be half the distance AB
     return { C, dist(A, B) / 2 };
 }
-
-// Function to check whether a circle
-// encloses the given points
+/**
+ Function to check whether a circle
+ encloses the given points
+ **/
 bool is_valid_circle(const Circle& c,
                      const vector<Point>& P)
 {
@@ -75,9 +85,10 @@ bool is_valid_circle(const Circle& c,
             return false;
     return true;
 }
-
-// Function to return the minimum enclosing
-// circle for N <= 3
+/**
+ Function to return the minimum enclosing
+ circle for N <= 3
+ **/
 Circle min_circle_trivial(vector<Point>& P)
 {
     assert(P.size() <= 3);
@@ -103,12 +114,13 @@ Circle min_circle_trivial(vector<Point>& P)
     }
     return circle_from(P[0], P[1], P[2]);
 }
-
-// Returns the MEC using Welzl's algorithm
-// Takes a set of input points P and a set R
-// points on the circle boundary.
-// n represents the number of points in P
-// that are not yet processed.
+/**
+ Returns the MEC using Welzl's algorithm
+ Takes a set of input points P and a set R
+ points on the circle boundary.
+ n represents the number of points in P
+ that are not yet processed.
+ **/
 Circle welzl_helper(vector<Point>& P,
                     vector<Point> R, int n)
 {
@@ -141,13 +153,19 @@ Circle welzl_helper(vector<Point>& P,
     // Return the MEC for P - {p} and R U {p}
     return welzl_helper(P, R, n - 1);
 }
-
+/**
+ * creat a circle by the welzl algorithm
+ **/
 Circle welzl(const vector<Point>& P)
 {
     vector<Point> P_copy = P;
     random_shuffle(P_copy.begin(), P_copy.end());
     return welzl_helper(P_copy, {}, P_copy.size());
 }
+
+/**
+ * build a vector form array of pointer to point
+ **/
 vector<Point> fromPointersToVector (Point** points,size_t size){
     vector<Point> pointVector;
     for (int i = 0; i < size; ++i) {
@@ -156,6 +174,14 @@ vector<Point> fromPointersToVector (Point** points,size_t size){
     }
     return pointVector;
 };
+
+
+ /**
+  *
+  * @param points pointer to array of pointer to point
+  * @param size the number of point in the array
+  * @return a circle contain all the point in his radius
+  */
 Circle findMinCircle(Point** points,size_t size){
 
     vector<Point> pointVector = fromPointersToVector(points,size);
