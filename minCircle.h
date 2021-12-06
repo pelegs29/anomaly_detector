@@ -1,3 +1,5 @@
+//* Author: 318509700 Peleg
+//*         207984956 Nadav
 
 #ifndef MINCIRCLE_H_
 #define MINCIRCLE_H_

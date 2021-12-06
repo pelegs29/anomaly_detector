@@ -1,4 +1,5 @@
-
+//* Author: 318509700 Peleg
+//*         207984956 Nadav
 
 #ifndef HYBRIDANOMALYDETECTOR_H_
 #define HYBRIDANOMALYDETECTOR_H_
