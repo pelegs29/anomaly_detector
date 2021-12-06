@@ -163,11 +163,7 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
             if (isThereAnomaly(featuresPoint, correlatedDuo)) {
                 //there is a variant that we found
                 //creat new report and add it to the reportvector;
-
-
                 float devCheck =abs(featuresPoint.y - correlatedDuo.lin_reg.f(featuresPoint.x));
-
-
                 AnomalyReport anomalyReport = AnomalyReport(features1 + "-" + features2, row + 1);
                 vectorReport.push_back(anomalyReport);
             }
