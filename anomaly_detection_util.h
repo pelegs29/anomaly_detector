@@ -1,4 +1,6 @@
 
+//* Author: 318509700 Peleg
+//*         207984956 Nadav
 #ifndef ANOMALYDETECTORUTIL_H_
 #define ANOMALYDETECTORUTIL_H_
 
@@ -39,5 +41,8 @@ float dev(Point p,Point** points, int size);
 
 // returns the deviation between point p and the line
 float dev(Point p,Line l);
+
+float distancePoint (Point a, Point b);
+
 
 #endif

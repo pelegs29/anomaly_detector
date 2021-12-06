@@ -72,3 +72,8 @@ float dev(Point p, Line l) {
     float yDeviation = pointY - p.y;
     return fabs(yDeviation);
 }
+
+float distancePoint (Point a, Point b){
+     float dis = pow(b.x - a.x, 2) + pow(b.y - a.y, 2) * 1.0;
+    return sqrt(dis);
+}
