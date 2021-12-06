@@ -16,4 +16,7 @@ add_executable(anomaly_detector
         timeseries.cpp
         timeseries.h minCircle.cpp minCircle.h
         HybridAnomalyDetector.cpp
-        HybridAnomalyDetector.h)
+        HybridAnomalyDetector.h
+        CLI.h
+        CLI.cpp
+        commands.h)

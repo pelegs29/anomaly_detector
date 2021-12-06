@@ -1,4 +1,5 @@
-
+//* Author: 318509700 Peleg
+//*         207984956 Nadav
 
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
@@ -12,27 +13,34 @@
 
 using namespace std;
 
-class DefaultIO{
+class DefaultIO {
 public:
-	virtual string read()=0;
-	virtual void write(string text)=0;
-	virtual void write(float f)=0;
-	virtual void read(float* f)=0;
-	virtual ~DefaultIO(){}
+    virtual string read() = 0;
 
-	// you may add additional methods here
+    virtual void write(string text) = 0;
+
+    virtual void write(float f) = 0;
+
+    virtual void read(float *f) = 0;
+
+    virtual ~DefaultIO() {}
+
+    // you may add additional methods here
 };
 
 // you may add here helper classes
 
 
 // you may edit this class
-class Command{
-	DefaultIO* dio;
+class Command {
+    string description;
+    DefaultIO *dio;
 public:
-	Command(DefaultIO* dio):dio(dio){}
-	virtual void execute()=0;
-	virtual ~Command(){}
+    Command(DefaultIO *dio) : dio(dio) {}
+
+    virtual void execute() = 0;
+
+    virtual ~Command() {}
 };
 
 // implement here your command classes
