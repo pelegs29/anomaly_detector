@@ -36,11 +36,15 @@ class Command {
     string description;
     DefaultIO *dio;
 public:
-    Command(DefaultIO *dio) : dio(dio) {}
+    Command(string desc, DefaultIO *dio) : dio(dio), description(desc) {}
 
     virtual void execute() = 0;
 
     virtual ~Command() {}
+
+    string getDesc() {
+        return this->description;
+    }
 };
 
 // implement here your command classes

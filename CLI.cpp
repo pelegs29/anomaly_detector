@@ -2,19 +2,18 @@
 //*         207984956 Nadav
 
 #include "CLI.h"
+#include "UploadCommand.h"
 #include <cctype>
 
 using namespace std;
 
-void printMenu() {
-    printf("Welcome to the Anomaly Detection Server.\n"
-           "Please choose an option:\n"
-           "1.upload a time series csv file\n"
-           "2.algorithm settings\n"
-           "3.detect anomalies\n"
-           "4.display results\n"
-           "5.upload anomalies and analyze results\n"
-           "6.exit\n");
+void CLI::buildCommandVector() {
+    this->commandsVector.push_back(UploadCommand(this->dio));
+}
+
+void printWelcomeMenu() {
+    cout << "Welcome to the Anomaly Detection Server." << endl <<
+         "Please choose an option:" << endl;
 }
 
 int returnOption(string input) {
@@ -26,21 +25,23 @@ int returnOption(string input) {
     return -1;
 }
 
-CLI::CLI(DefaultIO *dio) {
-}
-
 void CLI::start() {
     while (true) {
-        printMenu();
+        printWelcomeMenu();
+        int currentIndex = 0;
+        for (Command &cmd: commandsVector) {
+            cout << currentIndex << ". " << cmd.getDesc() << endl;
+            currentIndex++;
+        }
+        cout << currentIndex << ". exit";
         int input;
         input = returnOption(dio->read());
         if (input == -1)
             throw "Option given is not valid";
-        if (input == 6)
+        if (input == commandsVector.size() + 1)
             break;
         commandsVector[input - 1].execute();
     }
-
 }
 
 

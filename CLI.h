@@ -13,8 +13,13 @@ class CLI {
     DefaultIO *dio;
     vector<Command> commandsVector;
     // you can add data members
+
+    void buildCommandVector();
+
 public:
-    CLI(DefaultIO *dio);
+    CLI(DefaultIO *dio) : dio(dio) {
+        this->commandsVector = vector<Command>();
+    }
 
     void start();
 
