@@ -4,7 +4,6 @@
 #include <memory>
 #include "SimpleAnomalyDetector.h"
 
-#define CORR_THRESHOLD 0.9
 using namespace std;
 
 /**
@@ -16,10 +15,12 @@ using namespace std;
  * @param threshold float representing the maximum value that isn't anomaly
  */
 correlatedFeatures::correlatedFeatures(string feature1, string feature2, float corrlation,
-                                       const Line &linReg, float threshold) :
-        feature1(move(feature1)), feature2(move(feature2)),
-        corrlation(corrlation), lin_reg(linReg),
-        threshold(threshold) {}
+                                       const Line &linReg, float threshold,float x, float y) :feature1(move(feature1))
+                                       , feature2(move(feature2))
+                                       ,corrlation(corrlation)
+                                       , lin_reg(linReg)
+                                       ,threshold(threshold)
+                                       ,xCenter(0),yCenter(0) {}
 
 //constructor
 SimpleAnomalyDetector::SimpleAnomalyDetector() {
@@ -56,7 +57,7 @@ float maxDeviation(Line reg, Point **points_arr, int size) {
  * @param size given size of x or y array
  * @return a pointer to an array of Point pointers
  */
-Point **createPointsArr(float *x, float *y, int size) {
+Point** SimpleAnomalyDetector::createPointsArr(float *x, float *y, int size) {
     Point **points_arr = new Point *[size];
     for (int i = 0; i < size; ++i) {
         points_arr[i] = new Point(x[i], y[i]);
@@ -69,7 +70,7 @@ Point **createPointsArr(float *x, float *y, int size) {
  * @param arr given pointer to the Points array to be freed
  * @param size given arr size
  */
-void freePointsArr(Point **arr, int size) {
+void SimpleAnomalyDetector::freePointsArr(Point **arr, int size) {
     for (int i = 0; i < size; ++i) {
         delete arr[i];
     }
@@ -86,7 +87,7 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
     // flag -> if no correlativeDuo found
     for (int i = 0; i < data.size() - 1; ++i) {
         int correlativeDuo = -1;
-        float currentMax = CORR_THRESHOLD;
+        float currentMax = this->thresholdDetector;
         //pResult will hold the current correlation between feature i and j
         float pResult = 0;
         float *featureIArray = &data[i].second[0];
@@ -108,10 +109,35 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
             float regThreshold = maxDeviation(linearReg, points_arr, featureSize) * 1.1;
             correlatedFeatures duoFound = correlatedFeatures(data[i].first,
                                                              data[correlativeDuo].first,
-                                                             currentMax, linearReg, regThreshold);
+                                                             currentMax, linearReg, regThreshold,0,0);
             this->cf.push_back(duoFound);
             freePointsArr(points_arr, featureSize);
         }
+    }
+}
+/**
+ * same as base learn normal, but get also new threshold
+ * @param ts given TimeSeries data to be learned from.
+ * @param thresholdDetectorNew new threshold if need to change from the base value (0.9)
+ */
+void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts, float thresholdDetectorNew) {
+    this->thresholdDetector = thresholdDetectorNew;
+    SimpleAnomalyDetector::learnNormal(ts);
+    //this->learnNormal(ts);
+}
+/**
+ * return true if there is Anomaly
+ * @param devCheck the distance from the regression line
+ * @param correlatedDuo the correlated fetchers
+ * @return true is there is anomaly
+ */
+bool SimpleAnomalyDetector::isThereAnomaly(Point featuresPoint,correlatedFeatures correlatedDuo){
+    float devCheck =abs(featuresPoint.y - correlatedDuo.lin_reg.f(featuresPoint.x));
+    if (devCheck > correlatedDuo.threshold) {
+        return true;
+    }
+    else{
+        return false;
     }
 }
 
@@ -130,18 +156,18 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
         string features1 = correlatedDuo.feature1;
         string features2 = correlatedDuo.feature2;
         for (int row = 0; row < rowSize; row++) {
-            if (row == 98){
-                int u= 5;
-            }
             //get the data of the features in the time that we check from the data ts
             float features1Data = ts.getInfoByRow(row, features1);
             float features2Data = ts.getInfoByRow(row, features2);
             Point featuresPoint = Point(features1Data, features2Data);
-            //float devCheck = dev(featuresPoint, correlatedDuo.lin_reg);
-            float devCheck =abs(featuresPoint.y - correlatedDuo.lin_reg.f(featuresPoint.x));
-            if (devCheck > correlatedDuo.threshold) {
+            if (isThereAnomaly(featuresPoint, correlatedDuo)) {
                 //there is a variant that we found
                 //creat new report and add it to the reportvector;
+
+
+                float devCheck =abs(featuresPoint.y - correlatedDuo.lin_reg.f(featuresPoint.x));
+
+
                 AnomalyReport anomalyReport = AnomalyReport(features1 + "-" + features2, row + 1);
                 vectorReport.push_back(anomalyReport);
             }

@@ -149,3 +149,13 @@ float TimeSeries::getInfoByRow(int row, string category) const {
     return -1;
 
 }
+int TimeSeries::getCategoryIndexRow (const string& vecName) const{
+    for (int i = 0; i < this->data.size(); i++) {
+        if (this->data[i].first == vecName){
+            return i;
+        }
+    }
+    //default return the first pair
+    return 0;
+}
+

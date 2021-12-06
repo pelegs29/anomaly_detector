@@ -10,32 +10,26 @@
 
 
 /**
- Function to return the euclidean distance
- between two points
+ * return the distance between two point
  **/
-float dist(const Point& a, const Point& b)
+float disPointInCircle(const Point& APoint, const Point& BPoint)
 {
-    return sqrt(pow(a.x - b.x, 2)
-                + pow(a.y - b.y, 2));
+    return sqrt(pow(APoint.x - BPoint.x, 2)
+                + pow(APoint.y - BPoint.y, 2));
 }
 /**
- Function to check whether a point lies inside
- or on the boundaries of the circle
+ * the function check if a point is in / ot in boundaries of circle
  **/
-bool is_inside(const Circle& c, const Point& p)
+bool isInside(const Circle& c, const Point& p)
 {
-    return dist(c.center, p) <= c.radius;
+    return disPointInCircle(c.center, p) <= c.radius;
 }
 
 /**
-    The following two functions are used
-    To find the equation of the circle when
-    three points are given.
- **/
-
-// Helper method to get a circle defined by 3 points
-Point get_circle_center(float bx, float by,
-                        float cx, float cy)
+ * the function used to find circle when 3 point are input
+**/
+Point getCircleCenter(float bx, float by,
+                      float cx, float cy)
 {
     float B = bx * bx + by * by;
     float C = cx * cx + cy * cy;
@@ -44,62 +38,55 @@ Point get_circle_center(float bx, float by,
              (bx * C - cx * B) / (2 * D) };
 }
 /**
- Function to return a unique circle that
- intersects three points
+ the tunction return a  circle that intersects three points together
  **/
-Circle circle_from(const Point& A, const Point& B,
-                   const Point& C)
+Circle circleFrom(const Point& a, const Point& b,
+                  const Point& c)
 {
-    Point I = get_circle_center(B.x - A.x, B.y - A.y,
-                                C.x - A.x, C.y - A.y);
+    Point I = getCircleCenter(b.x - a.x, b.y - a.y,
+                              c.x - a.x, c.y - a.y);
 
-    I.x += A.x;
-    I.y += A.y;
-    return { I, dist(I, A) };
+    I.x += a.x;
+    I.y += a.y;
+    return {I, disPointInCircle(I, a) };
 }
 /**
- Function to return the smallest circle
- that intersects 2 points
+ the function  return the smallest circle that intersects 2 points
  **/
-Circle circle_from(const Point& A, const Point& B)
+Circle circleFrom(const Point& A, const Point& B)
 {
     // Set the center to be the midpoint of A and B
     Point C = { (A.x + B.x) / 2, (A.y + B.y) / 2 };
 
     // Set the radius to be half the distance AB
-    return { C, dist(A, B) / 2 };
+    return {C, disPointInCircle(A, B) / 2 };
 }
 /**
- Function to check whether a circle
- encloses the given points
+ the function check if a circle encloses the input points
  **/
-bool is_valid_circle(const Circle& c,
-                     const vector<Point>& P)
+bool isValidCircle(const Circle& c,
+                   const vector<Point>& P)
 {
-
-    // Iterating through all the points
-    // to check  whether the points
-    // lie inside the circle or not
     for (const Point& p : P)
-        if (!is_inside(c, p))
+        if (!isInside(c, p))
             return false;
     return true;
 }
 /**
- Function to return the minimum enclosing
- circle for N <= 3
+ the function  return the minimum enclosing circle for N <= 3
+ @param PVec vector of point
  **/
-Circle min_circle_trivial(vector<Point>& P)
+Circle minCircleTrivial(vector<Point>& PVec)
 {
-    assert(P.size() <= 3);
-    if (P.empty()) {
+    assert(PVec.size() <= 3);
+    if (PVec.empty()) {
         return { { 0, 0 }, 0 };
     }
-    else if (P.size() == 1) {
-        return { P[0], 0 };
+    else if (PVec.size() == 1) {
+        return {PVec[0], 0 };
     }
-    else if (P.size() == 2) {
-        return circle_from(P[0], P[1]);
+    else if (PVec.size() == 2) {
+        return circleFrom(PVec[0], PVec[1]);
     }
 
     // To check if MEC can be determined
@@ -107,51 +94,44 @@ Circle min_circle_trivial(vector<Point>& P)
     for (int i = 0; i < 3; i++) {
         for (int j = i + 1; j < 3; j++) {
 
-            Circle c = circle_from(P[i], P[j]);
-            if (is_valid_circle(c, P))
+            Circle c = circleFrom(PVec[i], PVec[j]);
+            if (isValidCircle(c, PVec))
                 return c;
         }
     }
-    return circle_from(P[0], P[1], P[2]);
+    return circleFrom(PVec[0], PVec[1], PVec[2]);
 }
-/**
- Returns the MEC using Welzl's algorithm
- Takes a set of input points P and a set R
- points on the circle boundary.
- n represents the number of points in P
- that are not yet processed.
- **/
-Circle welzl_helper(vector<Point>& P,
-                    vector<Point> R, int n)
+
+ /**
+  *
+  * @param PointVec vector of Point
+  * @param R Vector of Point in the circle boundary
+  * @param n the number of point that not yet in the circle
+  * @return return a circle using the welzl algorithm
+  */
+Circle welzlAlgorithmHelper(vector<Point>& PointVec,vector<Point> R, int n)
 {
     // Base case when all points processed or |R| = 3
     if (n == 0 || R.size() == 3) {
-        return min_circle_trivial(R);
+        return minCircleTrivial(R);
     }
-
-    // Pick a random point randomly
+    // random point randomly
     int idx = rand() % n;
-    Point p = P[idx];
+    Point p = PointVec[idx];
 
-    // Put the picked point at the end of P
-    // since it's more efficient than
-    // deleting from the middle of the vector
-    swap(P[idx], P[n - 1]);
+    // picked point at the end of PointVec
+    swap(PointVec[idx], PointVec[n - 1]);
 
-    // Get the MEC circle d from the
-    // set of points P - {p}
-    Circle d = welzl_helper(P, R, n - 1);
+    // Get the MEC circle d from the set of points PointVec - {p}
+    Circle d = welzlAlgorithmHelper(PointVec, R, n - 1);
 
     // If d contains p, return d
-    if (is_inside(d, p)) {
+    if (isInside(d, p)) {
         return d;
     }
-
     // Otherwise, must be on the boundary of the MEC
     R.push_back(p);
-
-    // Return the MEC for P - {p} and R U {p}
-    return welzl_helper(P, R, n - 1);
+    return welzlAlgorithmHelper(PointVec, R, n - 1);
 }
 /**
  * creat a circle by the welzl algorithm
@@ -160,7 +140,7 @@ Circle welzl(const vector<Point>& P)
 {
     vector<Point> P_copy = P;
     random_shuffle(P_copy.begin(), P_copy.end());
-    return welzl_helper(P_copy, {}, P_copy.size());
+    return welzlAlgorithmHelper(P_copy, {}, P_copy.size());
 }
 
 /**
@@ -187,5 +167,5 @@ Circle findMinCircle(Point** points,size_t size){
     vector<Point> pointVector = fromPointersToVector(points,size);
     vector<Point> P_copy = pointVector;
     random_shuffle(P_copy.begin(), P_copy.end());
-    return welzl_helper(P_copy, {}, P_copy.size());
+    return welzlAlgorithmHelper(P_copy, {}, P_copy.size());
 };

@@ -46,7 +46,10 @@ public:
     }
     float getInfo(float time, string category) const;
     float getInfoByRow(int row, string category) const;
-    //Destructors
+    int getCategoryIndexRow (const string& vecName) const;
+
+
+        //Destructors
     ~TimeSeries(){
     }
 };
