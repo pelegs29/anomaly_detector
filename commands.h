@@ -3,14 +3,11 @@
 
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
-
 #include<iostream>
-#include <string.h>
-
+#include <cstring>
 #include <fstream>
 #include <vector>
-#include "HybridAnomalyDetector.h"
-
+#include "CLI.h"
 using namespace std;
 
 class DefaultIO {
@@ -35,6 +32,7 @@ public:
 class Command {
     string description;
     DefaultIO *dio;
+
 public:
     Command(string desc, DefaultIO *dio) : dio(dio), description(desc) {}
 
@@ -44,6 +42,9 @@ public:
 
     string getDesc() {
         return this->description;
+    }
+    DefaultIO* getDefaultIO(){
+        return this->dio;
     }
 };
 

@@ -4,19 +4,20 @@
 #ifndef CLI_H_
 #define CLI_H_
 
-#include <string.h>
+#include <cstring>
 #include "commands.h"
 
 using namespace std;
 
-class CLI {
+ class CLI {
     DefaultIO *dio;
-    vector<Command> commandsVector;
-    // you can add data members
-
+    vector<Command*> commandsVector;
     void buildCommandVector();
-
 public:
+
+    //public members
+    TimeSeries ts;
+
     CLI(DefaultIO *dio) : dio(dio) {
         this->commandsVector = vector<Command>();
     }

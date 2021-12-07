@@ -8,8 +8,10 @@
 using namespace std;
 
 void CLI::buildCommandVector() {
-    this->commandsVector.push_back(UploadCommand(this->dio));
+    Command *upload = new UploadCommand(this->dio);
+    this->commandsVector.push_back(upload);
 }
+
 
 void printWelcomeMenu() {
     cout << "Welcome to the Anomaly Detection Server." << endl <<
@@ -29,8 +31,8 @@ void CLI::start() {
     while (true) {
         printWelcomeMenu();
         int currentIndex = 0;
-        for (Command &cmd: commandsVector) {
-            cout << currentIndex << ". " << cmd.getDesc() << endl;
+        for (Command *cmd: commandsVector) {
+            cout << currentIndex << ". " << cmd->getDesc() << endl;
             currentIndex++;
         }
         cout << currentIndex << ". exit";
@@ -40,7 +42,7 @@ void CLI::start() {
             throw "Option given is not valid";
         if (input == commandsVector.size() + 1)
             break;
-        commandsVector[input - 1].execute();
+        commandsVector[input - 1]->execute();
     }
 }
 
