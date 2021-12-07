@@ -7,7 +7,6 @@
 #include "commands.h"
 
 class UploadCommand : public Command {
-    CLI* Cli;
     //const string description = "upload a time series csv file";
 public:
     UploadCommand(DefaultIO *dio,CLI* cli) : Command("upload a time series csv file", dio) {

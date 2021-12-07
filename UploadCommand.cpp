@@ -8,8 +8,16 @@
     cout<<"Please upload your local train CSV file.";
     string inputRead;
     // get the input from the user
-    inputRead = this->getDefaultIO()->read();
+    inputRead = this->getDefaultIO()->read()+",anomalyTest.csv";
+    this->getDefaultIO()->write(inputRead);
+    cout<<"Upload complete.";
 
 
-    cout<<"check";
+
+    // for the test file
+     cout<<"Please upload your local test CSV file.";
+     // get the input from the user
+     inputRead = this->getDefaultIO()->read()+",anomalyTrain.csv";
+     this->getDefaultIO()->write(inputRead);
+     cout<<"Upload complete.";
 }
