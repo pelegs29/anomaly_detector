@@ -7,7 +7,7 @@
 #include <cstring>
 #include <fstream>
 #include <vector>
-#include "CLI.h"
+
 using namespace std;
 
 class DefaultIO {
@@ -30,11 +30,18 @@ public:
 
 // you may edit this class
 class Command {
+
     string description;
-    DefaultIO *dio;
+    DefaultIO* dio;
 
 public:
-    Command(string desc, DefaultIO *dio) : dio(dio), description(desc) {}
+
+    // constructor
+    Command(DefaultIO *dioIn,string descIn){
+        //dio(dio), description(desc)
+        description = descIn;
+        dio = dioIn;
+    }
 
     virtual void execute() = 0;
 

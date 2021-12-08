@@ -6,25 +6,31 @@
 
 #include <cstring>
 #include "commands.h"
+#include "UploadCommand.h"
+#include "HybridAnomalyDetector.h"
 
 using namespace std;
 
  class CLI {
     DefaultIO *dio;
     vector<Command*> commandsVector;
+    float correlation;
+    HybridAnomalyDetector* hybridAnomalyDetector;
+    vector<AnomalyReport> anomalyReportVec;
+
     void buildCommandVector();
 public:
-
-    //public members
-    TimeSeries ts;
-
     CLI(DefaultIO *dio) : dio(dio) {
-        this->commandsVector = vector<Command>();
-    }
+        this->correlation = 0.9;
+        this->hybridAnomalyDetector =  new HybridAnomalyDetector();
+        this->anomalyReportVec =  vector<AnomalyReport>();
+        this->buildCommandVector();
+    };
 
     void start();
 
-    virtual ~CLI();
+    virtual ~CLI(){
+    };
 };
 
 #endif /* CLI_H_ */

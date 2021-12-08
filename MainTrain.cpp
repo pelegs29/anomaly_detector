@@ -2,6 +2,7 @@
 #include <fstream>
 #include "commands.h"
 #include "CLI.h"
+#include "StandardIO.h"
 
 using namespace std;
 
@@ -72,11 +73,17 @@ void check(string outputFile,string expectedOutputFile){
 
  //small test
 int main(){
+    /** the main fot the test
 	STDtest std("input.txt","output.txt");
 	CLI cli(&std);
 	cli.start();
 	std.close();
 	check("output.txt","expectedOutput.txt");
 	cout<<"done"<<endl;
+     **/
+     DefaultIO *dio = new StandardIO();
+    CLI *cli = new CLI(dio);
+    cli->start();
+
 	return 0;
 }

@@ -1,6 +1,8 @@
 
 #include "StandardIO.h"
-#include <cstring>
+
+
+using namespace std;
 
 string StandardIO::read(){
     string readInput;
@@ -9,11 +11,51 @@ string StandardIO::read(){
 };
 
  void StandardIO::write(string text) {
-     char* ptr;
-     char *ptrText = &text[0];
-     ptr = strtok(ptrText,",");
 
-     ifstream  src(text, ios::binary);
-     ofstream  dst("InputCsv", ios::binary);
-     dst << src.rdbuf();
+     vector<string> input = inputString(text);
+     string src = input[0];
+     string desName = input[1];
+
+     // File input pointer
+     ofstream outfile(desName);
+     ifstream inputFile(src);
+     // Open an existing file
+     if(!inputFile.is_open()) throw runtime_error("Could not open file");
+
+     string line;
+     while (  getline( inputFile, line ))
+     {
+         if (line == "done"){
+             break;
+         }
+         outfile << line +"\n";
+         //outfile.write(&line[0],line.size());
+     }
+     outfile.close();
+     inputFile.close();
+
  }
+
+
+void StandardIO::write(float f) {
+
+}
+
+void StandardIO::read(float *f) {
+
+}
+
+
+vector<std::string> inputString(string input) {
+    vector<std::string> output;
+    char *str = &input[0];
+// Returns first token
+    char *token = strtok(str, ",");
+// Keep printing tokens while one of the
+// delimiters present in str[].
+    while (token != nullptr) {
+        output.emplace_back(token);
+        token = strtok(nullptr, ",");
+    }
+    return output;
+}

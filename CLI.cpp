@@ -2,7 +2,6 @@
 //*         207984956 Nadav
 
 #include "CLI.h"
-#include "UploadCommand.h"
 #include <cctype>
 
 using namespace std;
@@ -10,6 +9,12 @@ using namespace std;
 void CLI::buildCommandVector() {
     Command *upload = new UploadCommand(this->dio);
     this->commandsVector.push_back(upload);
+    Command *corle = new correlCommand(this->dio, &this->correlation);
+    this->commandsVector.push_back(corle);
+    Command *detect = new HybridCommand(this->dio, this->hybridAnomalyDetector, &this->anomalyReportVec);
+    this->commandsVector.push_back(detect);
+    Command *anomaly = new anomalyCommand(this->dio, this->hybridAnomalyDetector, &this->anomalyReportVec);
+    this->commandsVector.push_back(anomaly);
 }
 
 
@@ -28,14 +33,14 @@ int returnOption(string input) {
 }
 
 void CLI::start() {
+    printWelcomeMenu();
     while (true) {
-        printWelcomeMenu();
-        int currentIndex = 0;
+        int currentIndex = 1;
         for (Command *cmd: commandsVector) {
             cout << currentIndex << ". " << cmd->getDesc() << endl;
             currentIndex++;
         }
-        cout << currentIndex << ". exit";
+        cout << currentIndex << ". exit" <<endl;
         int input;
         input = returnOption(dio->read());
         if (input == -1)
@@ -46,7 +51,4 @@ void CLI::start() {
     }
 }
 
-
-CLI::~CLI() {
-}
 
