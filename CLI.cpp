@@ -19,12 +19,6 @@ void CLI::buildCommandVector() {
     this->commandsVector.push_back(resultAnomaly);
 }
 
-
-void printWelcomeMenu() {
-    cout << "Welcome to the Anomaly Detection Server." << endl <<
-         "Please choose an option:" << endl;
-}
-
 int returnOption(string input) {
     if (1 != input.length() || 0 == isdigit(input[0]))
         return -1;
@@ -35,14 +29,14 @@ int returnOption(string input) {
 }
 
 void CLI::start() {
+    this->dio->write("Welcome to the Anomaly Detection Server.\nPlease choose an option:\n" );
     while (true) {
-        printWelcomeMenu();
         int currentIndex = 1;
         for (Command *cmd: commandsVector) {
-            cout << currentIndex << "." << cmd->getDesc() << endl;
+            this->dio->write(to_string(currentIndex)+ "." + cmd->getDesc()+ "\n");
             currentIndex++;
         }
-        cout << currentIndex << ".exit" <<endl;
+        this->dio->write(to_string(currentIndex) + ".exit\n");
         int input;
         input = returnOption(dio->read());
         if (input == -1)
