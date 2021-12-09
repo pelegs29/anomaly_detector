@@ -4,13 +4,14 @@
 
 using namespace std;
 
-string StandardIO::read(){
+string StandardIO::read() {
     string readInput;
     cin >> readInput;
     return readInput;
 };
+
 void StandardIO::write(string text) {
-    cout<< text;
+    cout << text;
 }
 
 

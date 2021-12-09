@@ -18,32 +18,30 @@ vector<string> inputString(string input) {
 }
 
 
-
-
- void UploadCommand::execute(){
-    cout<<"Please upload your local train CSV file."<<endl;
+void UploadCommand::execute() {
+    this->getDefaultIO()->write("Please upload your local train CSV file.\n");
     string inputRead;
     // get the train csv from the user
     inputRead = "anomalyTrain.csv";
     this->readCSV(inputRead);
-    cout<<"Upload complete."<<endl;
+    cout << "Upload complete." << endl;
 
     // for the test file
-     cout<<"Please upload your local test CSV file." <<endl;
-     // get the input from the user
-     inputRead = "anomalyTest.csv";
-     this->readCSV(inputRead);
-     cout<<"Upload complete."<<endl;
+    this->getDefaultIO()->write("Please upload your local test CSV file.\n");
+    // get the input from the user
+    inputRead = "anomalyTest.csv";
+    this->readCSV(inputRead);
+    cout << "Upload complete." << endl;
 }
 
 void correlCommand::execute() {
-    cout<<"The current correlation threshold is " << + *this->correlation <<endl;
-    cout<<"Type a new threshold"<<endl;
+    this->getDefaultIO()->write("The current correlation threshold is " + to_string(*this->correlation) + "\n");
+    this->getDefaultIO()->write("Type a new threshold\n");
     string intput = this->getDefaultIO()->read();
     float numInput = stof(&intput[0]);
     //if the input is not 0-1 the user need to enter again
-    while (1 < numInput || 0 > numInput){
-        cout <<"please choose a value between 0 and 1." << endl;
+    while (1 < numInput || 0 > numInput) {
+        this->getDefaultIO()->write("please choose a value between 0 and 1.\n");
         intput = this->getDefaultIO()->read();
         numInput = atoi(&intput[0]);
     }
@@ -53,17 +51,13 @@ void correlCommand::execute() {
 }
 
 
-
-
-
 //merge all the report with the same area of time and description
-vector<pair<pair<int,int>,string>> mergeReport (vector<AnomalyReport> reportVec){
-    vector<pair<pair<int,int>,string>> mergeReport = vector<pair<pair<int,int>,string>>();
-    mergeReport.push_back(make_pair(make_pair(reportVec[0].timeStep,reportVec[0].timeStep),reportVec[0].description));
-    int index =0;
-    for (int i = 1; i < reportVec.size(); ++i)
-    {
-        if (reportVec[i-1].description == reportVec[i].description){
+vector<pair<pair<int, int>, string>> mergeReport(vector<AnomalyReport> reportVec) {
+    vector<pair<pair<int, int>, string>> mergeReport = vector<pair<pair<int, int>, string>>();
+    mergeReport.push_back(make_pair(make_pair(reportVec[0].timeStep, reportVec[0].timeStep), reportVec[0].description));
+    int index = 0;
+    for (int i = 1; i < reportVec.size(); ++i) {
+        if (reportVec[i - 1].description == reportVec[i].description) {
             mergeReport[index].first.second = reportVec[i].timeStep;
         } else {
             mergeReport.push_back(
@@ -80,15 +74,15 @@ void HybridCommand::execute() {
     this->ptrHybrid->learnNormal(tsTrain);
     TimeSeries tsTest = TimeSeries("anomalyTest.csv");
     *this->anomalyVec = this->ptrHybrid->detect(tsTest);
-    cout<<"anomaly detection complete." <<endl;
+    this->getDefaultIO()->write("anomaly detection complete.\n");
 }
 
 void anomalyCommand::execute() {
-    for(const AnomalyReport& report: *this->anomalyVec){
+    for (const AnomalyReport &report: *this->anomalyVec) {
         int row = report.timeStep;
-        cout << row <<  "\t" +report.description<< endl;
+        this->getDefaultIO()->write(to_string(row) + "\t" + report.description + "\n");
     }
-    cout<< "Done." <<endl;
+    this->getDefaultIO()->write("Done.\n");
 
 }
 
@@ -106,60 +100,65 @@ vector<int> inputStringToInt(string input) {
     return output;
 }
 
-vector<pair<int, int>> resultCommand::inputAnomaly(){
+vector<pair<int, int>> resultCommand::inputAnomaly() {
     vector<pair<int, int>> vectorResult = vector<pair<int, int>>();
-    cout<< "Please upload your local anomalies file." <<endl;
+    this->getDefaultIO()->write("Please upload your local anomalies file.\n");
     string inputRead;
     // get the path csv from the user
     inputRead = "trueAnomaly.csv";
     this->readCSV(inputRead);
-    cout<<"Upload complete."<<endl;
+    this->getDefaultIO()->write("Upload complete.\n");
 
     //star read the file
     ifstream inputFile("trueAnomaly.csv"); // the file that i need to upload to the server
     // Open an existing file
-    if(!inputFile.is_open()) throw runtime_error("Could not open file");
+    if (!inputFile.is_open()) throw runtime_error("Could not open file");
     string line;
-    while (  getline( inputFile, line ))
-    {
+    while (getline(inputFile, line)) {
         vector<int> input = inputStringToInt(line);
-        pair<int,int> pair = make_pair(input[0],input[1]);
+        pair<int, int> pair = make_pair(input[0], input[1]);
         vectorResult.push_back(pair);
     }
     inputFile.close();
     return vectorResult;
 }
 
-bool isIntersection (pair<int,int> result , pair<int,int> reporting){
-    if ((result.first >= reporting.first && result.second<= reporting.second )||
-    (result.first <= reporting.first && result.second >= reporting.second)){
+bool isIntersection(pair<int, int> result, pair<int, int> reporting) {
+    if ((result.first >= reporting.first && result.second <= reporting.second) ||
+        (result.first <= reporting.first && result.second >= reporting.second)) {
         return true;
     }
     if ((result.first <= reporting.first && result.second >= reporting.first) ||
-    (result.first >= reporting.first && result.first <= reporting.second)) {
+        (result.first >= reporting.first && result.first <= reporting.second)) {
         return true;
     }
     return false;
+}
+
+string fixPrecision(float number){
+    stringstream ss;
+    ss << precision(3) <<
 }
 
 void resultCommand::execute() {
 
     //get the input from the user and return a vector contain a pair <star anomaly, end anomaly>)
     vector<pair<int, int>> vectorResult = inputAnomaly();
-    vector<pair<pair<int,int>,string>> mergeReportVec = mergeReport(*this->anomalyVec);
+    vector<pair<pair<int, int>, string>> mergeReportVec = mergeReport(*this->anomalyVec);
     int TP = 0;
     //check the intersection with the result from the detector
-    for (pair<pair<int,int>,string> reporting : mergeReportVec){
-        for(pair<int,int> result : vectorResult){
-            if (isIntersection(reporting.first,result)){
+    for (pair<pair<int, int>, string> reporting: mergeReportVec) {
+        for (pair<int, int> result: vectorResult) {
+            if (isIntersection(reporting.first, result)) {
                 TP++;
             }
         }
     }
     int n = this->ptrHybrid->EventNum;
-    float FP =mergeReportVec.size() - TP;
+    float FP = mergeReportVec.size() - TP;
+
     cout.precision(3);
-    cout <<"True Positive Rate: " << (float)TP/vectorResult.size() <<endl ;
-    cout <<"False Positive Rate: " << FP/n <<endl ;
+    cout << "True Positive Rate: " << (float) TP / vectorResult.size() << endl;
+    cout << "False Positive Rate: " << FP / n << endl;
 
 }
