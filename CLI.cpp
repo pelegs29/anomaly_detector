@@ -9,12 +9,14 @@ using namespace std;
 void CLI::buildCommandVector() {
     Command *upload = new UploadCommand(this->dio);
     this->commandsVector.push_back(upload);
-    Command *corle = new correlCommand(this->dio, &this->correlation);
+    Command *corle = new correlCommand(this->dio, this->correlation);
     this->commandsVector.push_back(corle);
     Command *detect = new HybridCommand(this->dio, this->hybridAnomalyDetector, &this->anomalyReportVec);
     this->commandsVector.push_back(detect);
     Command *anomaly = new anomalyCommand(this->dio, this->hybridAnomalyDetector, &this->anomalyReportVec);
     this->commandsVector.push_back(anomaly);
+    Command *resultAnomaly = new resultCommand(this->dio, this->hybridAnomalyDetector, &this->anomalyReportVec);
+    this->commandsVector.push_back(resultAnomaly);
 }
 
 
@@ -33,8 +35,8 @@ int returnOption(string input) {
 }
 
 void CLI::start() {
-    printWelcomeMenu();
     while (true) {
+        printWelcomeMenu();
         int currentIndex = 1;
         for (Command *cmd: commandsVector) {
             cout << currentIndex << ". " << cmd->getDesc() << endl;

@@ -11,17 +11,14 @@ string StandardIO::read(){
 };
 
  void StandardIO::write(string text) {
-
      vector<string> input = inputString(text);
      string src = input[0];
      string desName = input[1];
-
      // File input pointer
      ofstream outfile(desName);
-     ifstream inputFile(src);
+     ifstream inputFile(src); // the file that i need to upload to the server
      // Open an existing file
      if(!inputFile.is_open()) throw runtime_error("Could not open file");
-
      string line;
      while (  getline( inputFile, line ))
      {
@@ -33,7 +30,6 @@ string StandardIO::read(){
      }
      outfile.close();
      inputFile.close();
-
  }
 
 
@@ -46,7 +42,7 @@ void StandardIO::read(float *f) {
 }
 
 
-vector<std::string> inputString(string input) {
+vector<string> StandardIO::inputString(string input) {
     vector<std::string> output;
     char *str = &input[0];
 // Returns first token

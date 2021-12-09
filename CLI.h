@@ -14,21 +14,22 @@ using namespace std;
  class CLI {
     DefaultIO *dio;
     vector<Command*> commandsVector;
-    float correlation;
     HybridAnomalyDetector* hybridAnomalyDetector;
     vector<AnomalyReport> anomalyReportVec;
+    float* correlation;
 
     void buildCommandVector();
 public:
     CLI(DefaultIO *dio) : dio(dio) {
-        this->correlation = 0.9;
         this->hybridAnomalyDetector =  new HybridAnomalyDetector();
         this->anomalyReportVec =  vector<AnomalyReport>();
+        this->correlation = &hybridAnomalyDetector->thresholdDetector;
         this->buildCommandVector();
     };
 
     void start();
 
+    //////////////////////////////////////////////////////remember to free
     virtual ~CLI(){
     };
 };

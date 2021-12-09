@@ -18,6 +18,8 @@ public:
     virtual void read(float *f);
 
     virtual ~StandardIO() {}
+
+     vector<string> inputString(string input);
+
 };
 
-vector<string> inputString(string input);

@@ -69,4 +69,23 @@ public:
     virtual void execute();
 
 };
+
+class resultCommand : public Command
+{
+public:
+    HybridAnomalyDetector* ptrHybrid;
+    vector<AnomalyReport> *anomalyVec;
+    //constructor
+    resultCommand(DefaultIO *dio, HybridAnomalyDetector *ptr,  vector< AnomalyReport>* pVector) :
+            Command(dio,"upload anomalies and analyze results") {
+        this->ptrHybrid= ptr;
+        this->anomalyVec = pVector;
+    };
+
+    vector<pair<int,int>> inputAnomaly();
+
+
+        virtual void execute();
+
+};
 #endif //SIMPLE_EXAMPLE_UPLOADCOMMAND_H

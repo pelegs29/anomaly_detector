@@ -82,6 +82,7 @@ void SimpleAnomalyDetector::freePointsArr(Point **arr, int size) {
  */
 void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
     vector<correlatedFeatures> correlatedFound;
+    this->EventNum = ts.getData()[0].second.size(); //update the number of row (time) int the data
     vector<pair<string, vector<float>>> data = ts.getData();
     // flag -> if no correlativeDuo found
     for (int i = 0; i < data.size() - 1; ++i) {
@@ -169,5 +170,9 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
         }
     }
     return vectorReport;
+}
+
+void SimpleAnomalyDetector::changeThreshold(float input) {
+    this->thresholdDetector = input;
 }
 
