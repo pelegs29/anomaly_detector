@@ -39,10 +39,10 @@ void CLI::start() {
         printWelcomeMenu();
         int currentIndex = 1;
         for (Command *cmd: commandsVector) {
-            cout << currentIndex << ". " << cmd->getDesc() << endl;
+            cout << currentIndex << "." << cmd->getDesc() << endl;
             currentIndex++;
         }
-        cout << currentIndex << ". exit" <<endl;
+        cout << currentIndex << ".exit" <<endl;
         int input;
         input = returnOption(dio->read());
         if (input == -1)

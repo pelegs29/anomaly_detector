@@ -73,17 +73,18 @@ void check(string outputFile,string expectedOutputFile){
 
  //small test
 int main(){
-    /**
+
 	STDtest std("input.txt","output.txt");
 	CLI cli(&std);
 	cli.start();
 	std.close();
 	check("output.txt","expectedOutput.txt");
 	cout<<"done"<<endl;
-     **/
-     DefaultIO *dio = new StandardIO();
-    CLI *cli = new CLI(dio);
-    cli->start();
+
+
+//     DefaultIO *dio = new StandardIO();
+//    CLI *cli = new CLI(dio);
+//    cli->start();
 
 
 	return 0;

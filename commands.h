@@ -53,6 +53,26 @@ public:
     DefaultIO* getDefaultIO(){
         return this->dio;
     }
+    void readCSV(string text) {
+        //vector<string> input = inputString(text);
+        //string src = input[0];
+        //string desName = input[1];
+        // File input pointer
+        ofstream outfile(text);
+        //ifstream inputFile(src); // the file that i need to upload to the server
+        // Open an existing file
+        //if(!inputFile.is_open()) throw runtime_error("Could not open file");
+        string line;
+        while (true){
+            line=this->getDefaultIO()->read();
+            if(line == "done"){
+                break;
+            }
+            outfile << line +"\n";
+        }
+        outfile.close();
+        //inputFile.close();
+    }
 };
 
 // implement here your command classes

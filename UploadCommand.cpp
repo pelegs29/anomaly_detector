@@ -3,25 +3,42 @@
 #include "UploadCommand.h"
 
 
+vector<string> inputString(string input) {
+    vector<string> output;
+    char *str = &input[0];
+// Returns first token
+    char *token = strtok(str, ">");
+// Keep printing tokens while one of the
+// delimiters present in str[].
+    while (token != nullptr) {
+        output.push_back(token);
+        token = strtok(nullptr, ">");
+    }
+    return output;
+}
+
+
+
 
  void UploadCommand::execute(){
     cout<<"Please upload your local train CSV file."<<endl;
     string inputRead;
     // get the train csv from the user
-    inputRead = this->getDefaultIO()->read()+",anomalyTrain.csv";
-    this->getDefaultIO()->write(inputRead);
+    inputRead = "anomalyTrain.csv";
+    this->readCSV(inputRead);
     cout<<"Upload complete."<<endl;
 
     // for the test file
      cout<<"Please upload your local test CSV file." <<endl;
      // get the input from the user
-     inputRead = this->getDefaultIO()->read()+",anomalyTest.csv";
-     this->getDefaultIO()->write(inputRead);
+     inputRead = "anomalyTest.csv";
+     this->readCSV(inputRead);
      cout<<"Upload complete."<<endl;
 }
 
 void correlCommand::execute() {
     cout<<"The current correlation threshold is " << + *this->correlation <<endl;
+    cout<<"Type a new threshold"<<endl;
     string intput = this->getDefaultIO()->read();
     float numInput = stof(&intput[0]);
     //if the input is not 0-1 the user need to enter again
@@ -63,7 +80,7 @@ void HybridCommand::execute() {
     this->ptrHybrid->learnNormal(tsTrain);
     TimeSeries tsTest = TimeSeries("anomalyTest.csv");
     *this->anomalyVec = this->ptrHybrid->detect(tsTest);
-    cout<<"anomaly detection complete" <<endl;
+    cout<<"anomaly detection complete." <<endl;
 }
 
 void anomalyCommand::execute() {
@@ -75,7 +92,7 @@ void anomalyCommand::execute() {
 
 }
 
-vector<int> inputString(string input) {
+vector<int> inputStringToInt(string input) {
     vector<int> output;
     char *str = &input[0];
 // Returns first token
@@ -94,8 +111,8 @@ vector<pair<int, int>> resultCommand::inputAnomaly(){
     cout<< "Please upload your local anomalies file." <<endl;
     string inputRead;
     // get the path csv from the user
-    inputRead = this->getDefaultIO()->read()+",trueAnomaly.csv";
-    this->getDefaultIO()->write(inputRead); //upload the csv to the server
+    inputRead = "trueAnomaly.csv";
+    this->readCSV(inputRead);
     cout<<"Upload complete."<<endl;
 
     //star read the file
@@ -105,7 +122,7 @@ vector<pair<int, int>> resultCommand::inputAnomaly(){
     string line;
     while (  getline( inputFile, line ))
     {
-        vector<int> input = inputString(line);
+        vector<int> input = inputStringToInt(line);
         pair<int,int> pair = make_pair(input[0],input[1]);
         vectorResult.push_back(pair);
     }
@@ -118,8 +135,8 @@ bool isIntersection (pair<int,int> result , pair<int,int> reporting){
     (result.first <= reporting.first && result.second >= reporting.second)){
         return true;
     }
-    if ((result.first <= reporting.first && result.second >= reporting.second) ||
-    (result.first <= reporting.second && result.second >= reporting.second)) {
+    if ((result.first <= reporting.first && result.second >= reporting.first) ||
+    (result.first >= reporting.first && result.first <= reporting.second)) {
         return true;
     }
     return false;
