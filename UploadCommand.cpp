@@ -1,6 +1,7 @@
 //* Author: 318509700 Peleg
 //*         207984956 Nadav
 #include "UploadCommand.h"
+#include <math.h>
 
 
 vector<string> inputString(string input) {
@@ -24,14 +25,14 @@ void UploadCommand::execute() {
     // get the train csv from the user
     inputRead = "anomalyTrain.csv";
     this->readCSV(inputRead);
-    cout << "Upload complete." << endl;
+    this->getDefaultIO()->write( "Upload complete.\n");
 
     // for the test file
     this->getDefaultIO()->write("Please upload your local test CSV file.\n");
     // get the input from the user
     inputRead = "anomalyTest.csv";
     this->readCSV(inputRead);
-    cout << "Upload complete." << endl;
+    this->getDefaultIO()->write( "Upload complete.\n");
 }
 
 void correlCommand::execute() {
@@ -46,8 +47,6 @@ void correlCommand::execute() {
         numInput = atoi(&intput[0]);
     }
     *this->correlation = numInput;
-    //cout<<"The current correlation threshold is " << + *this->correlation <<endl;
-
 }
 
 
@@ -135,10 +134,10 @@ bool isIntersection(pair<int, int> result, pair<int, int> reporting) {
     return false;
 }
 
-string fixPrecision(float number){
-    stringstream ss;
-    ss << precision(3) <<
-}
+//string fixPrecision(float number){
+//    stringstream ss;
+//    ss << precision(3) <<
+//}
 
 void resultCommand::execute() {
 
@@ -155,10 +154,11 @@ void resultCommand::execute() {
         }
     }
     int n = this->ptrHybrid->EventNum;
+    //roundf(x * 100) / 100.0
     float FP = mergeReportVec.size() - TP;
-
-    cout.precision(3);
-    cout << "True Positive Rate: " << (float) TP / vectorResult.size() << endl;
-    cout << "False Positive Rate: " << FP / n << endl;
+    float  TPR =TP / vectorResult.size();
+    float FPN = FP / n;
+    this->getDefaultIO()->write("True Positive Rate: "+ to_string(TPR) +"\n");
+    this->getDefaultIO()->write("False Positive Rate: " + to_string(FPN) +"\n");
 
 }
