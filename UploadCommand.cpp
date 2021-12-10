@@ -25,14 +25,14 @@ void UploadCommand::execute() {
     // get the train csv from the user
     inputRead = "anomalyTrain.csv";
     this->readCSV(inputRead);
-    this->getDefaultIO()->write( "Upload complete.\n");
+    this->getDefaultIO()->write("Upload complete.\n");
 
     // for the test file
     this->getDefaultIO()->write("Please upload your local test CSV file.\n");
     // get the input from the user
     inputRead = "anomalyTest.csv";
     this->readCSV(inputRead);
-    this->getDefaultIO()->write( "Upload complete.\n");
+    this->getDefaultIO()->write("Upload complete.\n");
 }
 
 void correlCommand::execute() {
@@ -134,10 +134,10 @@ bool isIntersection(pair<int, int> result, pair<int, int> reporting) {
     return false;
 }
 
-//string fixPrecision(float number){
-//    stringstream ss;
-//    ss << precision(3) <<
-//}
+float fixPrecision(float number) {
+    int result = (int) (number * 1000);
+    return (float) result / 1000;
+}
 
 void resultCommand::execute() {
 
@@ -156,9 +156,11 @@ void resultCommand::execute() {
     int n = this->ptrHybrid->EventNum;
     //roundf(x * 100) / 100.0
     float FP = mergeReportVec.size() - TP;
-    float  TPR =TP / vectorResult.size();
+    float TPR = TP / vectorResult.size();
     float FPN = FP / n;
-    this->getDefaultIO()->write("True Positive Rate: "+ to_string(TPR) +"\n");
-    this->getDefaultIO()->write("False Positive Rate: " + to_string(FPN) +"\n");
+    TPR = fixPrecision(TPR);
+    FPN = fixPrecision(FPN);
+    this->getDefaultIO()->write("True Positive Rate: " + to_string(TPR) + "\n");
+    this->getDefaultIO()->write("False Positive Rate: " + to_string(FPN) + "\n");
 
 }
