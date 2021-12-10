@@ -1,10 +1,10 @@
 //* Author: 318509700 Peleg
 //*         207984956 Nadav
 #include "UploadCommand.h"
-#include <math.h>
+#include <cmath>
 
 
-vector<string> inputString(string input, const char *separator) {
+vector<string> strToVec(string input, const char *separator) {
     vector<string> output;
     char *str = &input[0];
 // Returns first token
@@ -12,12 +12,20 @@ vector<string> inputString(string input, const char *separator) {
 // Keep printing tokens while one of the
 // delimiters present in str[].
     while (token != nullptr) {
-        output.push_back(token);
+        output.emplace_back(token);
         token = strtok(nullptr, separator);
     }
     return output;
 }
 
+vector<int> strVecToIntVec(vector<string> &orgVector) {
+    vector<int> newVector;
+    newVector.reserve(orgVector.size());
+for (string &value: orgVector) {
+        newVector.emplace_back(stoi(value));
+    }
+    return newVector;
+}
 
 void UploadCommand::execute() {
     this->getDefaultIO()->write("Please upload your local train CSV file.\n");
@@ -85,20 +93,6 @@ void anomalyCommand::execute() {
 
 }
 
-vector<int> inputStringToInt(string input) {
-    vector<int> output;
-    char *str = &input[0];
-// Returns first token
-    char *token = strtok(str, ",");
-// Keep printing tokens while one of the
-// delimiters present in str[].
-    while (token != nullptr) {
-        output.push_back(atoi(token));
-        token = strtok(nullptr, ",");
-    }
-    return output;
-}
-
 vector<pair<int, int>> resultCommand::inputAnomaly() {
     vector<pair<int, int>> vectorResult = vector<pair<int, int>>();
     this->getDefaultIO()->write("Please upload your local anomalies file.\n");
@@ -114,9 +108,11 @@ vector<pair<int, int>> resultCommand::inputAnomaly() {
     if (!inputFile.is_open()) throw runtime_error("Could not open file");
     string line;
     while (getline(inputFile, line)) {
-        vector<int> input = inputStringToInt(line);
+        auto *inputVector = new vector<string>(strToVec(line, ","));
+        vector<int> input = strVecToIntVec(*inputVector);
         pair<int, int> pair = make_pair(input[0], input[1]);
         vectorResult.push_back(pair);
+        free(inputVector);
     }
     inputFile.close();
     return vectorResult;
@@ -133,11 +129,13 @@ bool isIntersection(pair<int, int> result, pair<int, int> reporting) {
     }
     return false;
 }
-string floatToString (float num){
-    vector<string> vec = inputString(to_string(num),".");
+
+string floatToString(float num) {
+    vector<string> vec = strToVec(to_string(num), ".");
 
 
 }
+
 void resultCommand::execute() {
 
     //get the input from the user and return a vector contain a pair <star anomaly, end anomaly>)
@@ -158,7 +156,7 @@ void resultCommand::execute() {
     float TPR = TP / vectorResult.size();
     float FPN = FP / n;
 
-    this->getDefaultIO()->write("True Positive Rate: " + to_string(TPR). + "\n");
+    this->getDefaultIO()->write("True Positive Rate: " + to_string(TPR) + "\n");
     this->getDefaultIO()->write("False Positive Rate: " + to_string(FPN) + "\n");
 
 }
