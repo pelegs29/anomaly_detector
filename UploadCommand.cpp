@@ -4,16 +4,16 @@
 #include <math.h>
 
 
-vector<string> inputString(string input) {
+vector<string> inputString(string input, const char *separator) {
     vector<string> output;
     char *str = &input[0];
 // Returns first token
-    char *token = strtok(str, ">");
+    char *token = strtok(str, separator);
 // Keep printing tokens while one of the
 // delimiters present in str[].
     while (token != nullptr) {
         output.push_back(token);
-        token = strtok(nullptr, ">");
+        token = strtok(nullptr, separator);
     }
     return output;
 }
@@ -133,12 +133,11 @@ bool isIntersection(pair<int, int> result, pair<int, int> reporting) {
     }
     return false;
 }
+string floatToString (float num){
+    vector<string> vec = inputString(to_string(num),".");
 
-float fixPrecision(float number) {
-    int result = (int) (number * 1000);
-    return (float) result / 1000;
+
 }
-
 void resultCommand::execute() {
 
     //get the input from the user and return a vector contain a pair <star anomaly, end anomaly>)
@@ -158,9 +157,8 @@ void resultCommand::execute() {
     float FP = mergeReportVec.size() - TP;
     float TPR = TP / vectorResult.size();
     float FPN = FP / n;
-    TPR = fixPrecision(TPR);
-    FPN = fixPrecision(FPN);
-    this->getDefaultIO()->write("True Positive Rate: " + to_string(TPR) + "\n");
+
+    this->getDefaultIO()->write("True Positive Rate: " + to_string(TPR). + "\n");
     this->getDefaultIO()->write("False Positive Rate: " + to_string(FPN) + "\n");
 
 }
