@@ -19,5 +19,5 @@ add_executable(anomaly_detector
         HybridAnomalyDetector.h
         CLI.h
         CLI.cpp
-        commands.h UploadCommand.cpp UploadCommand.h
+        commands.h
         StandardIO.h StandardIO.cpp)

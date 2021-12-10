@@ -13,7 +13,7 @@ void CLI::buildCommandVector() {
     this->commandsVector.push_back(corle);
     Command *detect = new HybridCommand(this->dio, this->hybridAnomalyDetector, &this->anomalyReportVec);
     this->commandsVector.push_back(detect);
-    Command *anomaly = new anomalyCommand(this->dio, this->hybridAnomalyDetector, &this->anomalyReportVec);
+    Command *anomaly = new anomalyCommand(this->dio, &this->anomalyReportVec);
     this->commandsVector.push_back(anomaly);
     Command *resultAnomaly = new resultCommand(this->dio, this->hybridAnomalyDetector, &this->anomalyReportVec);
     this->commandsVector.push_back(resultAnomaly);

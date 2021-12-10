@@ -153,7 +153,7 @@ vector<Point> fromPointersToVector (Point** points,size_t size){
         pointVector.push_back(point);
     }
     return pointVector;
-};
+}
 
 
  /**
@@ -168,4 +168,4 @@ Circle findMinCircle(Point** points,size_t size){
     vector<Point> P_copy = pointVector;
     random_shuffle(P_copy.begin(), P_copy.end());
     return welzlAlgorithmHelper(P_copy, {}, P_copy.size());
-};
+}

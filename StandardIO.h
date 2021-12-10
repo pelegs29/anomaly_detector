@@ -1,3 +1,7 @@
+
+#ifndef STANDARDIO_H_
+#define STANDARDIO_H_
+
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -13,14 +17,12 @@ public:
 
     virtual void write(string text);
 
-    virtual void write(float f) ;
+    virtual void write(float f);
 
     virtual void read(float *f);
 
-
-        virtual ~StandardIO() {}
-
-     vector<string> inputString(string input);
+    virtual ~StandardIO() {}
 
 };
 
+#endif /* STANDARDIO_H_ */

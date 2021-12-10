@@ -6,7 +6,6 @@
 
 #include <cstring>
 #include "commands.h"
-#include "UploadCommand.h"
 #include "HybridAnomalyDetector.h"
 
 using namespace std;

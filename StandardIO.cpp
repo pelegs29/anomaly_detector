@@ -8,7 +8,7 @@ string StandardIO::read() {
     string readInput;
     cin >> readInput;
     return readInput;
-};
+}
 
 void StandardIO::write(string text) {
     cout << text;

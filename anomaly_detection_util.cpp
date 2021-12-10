@@ -5,7 +5,6 @@
  *         207984956 Nadav
  */
 #include "anomaly_detection_util.h"
-#include <iostream>
 #include <cmath>
 
 using namespace std;
