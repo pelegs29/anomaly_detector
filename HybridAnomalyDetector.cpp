@@ -56,10 +56,11 @@ void  HybridAnomalyDetector::learnNormal(const TimeSeries &ts) {
      // case 2 - check is the correlation between 0.5 -0.9 (the threshold of the detector)
      bool hybrid = false;
      if (correlated.corrlation< this->thresholdDetector && correlated.corrlation>0.5) {
-         Point *center = new Point(correlated.xCenter, correlated.yCenter);
+         auto *center = new Point(correlated.xCenter, correlated.yCenter);
          if (distancePoint(featuresPoint, *(center)) > correlated.threshold) {
              hybrid = true;
          }
+         delete center;
      }
      if (hybrid || simple){
          return true;

@@ -10,26 +10,30 @@
 
 using namespace std;
 
- class CLI {
+class CLI {
     DefaultIO *dio;
-    vector<Command*> commandsVector;
-    HybridAnomalyDetector* hybridAnomalyDetector;
+    vector<Command *> commandsVector;
+    HybridAnomalyDetector *hybridAnomalyDetector;
     vector<AnomalyReport> anomalyReportVec;
-    float* correlation;
+    float *correlation;
 
     void buildCommandVector();
+
 public:
     CLI(DefaultIO *dio) : dio(dio) {
-        this->hybridAnomalyDetector =  new HybridAnomalyDetector();
-        this->anomalyReportVec =  vector<AnomalyReport>();
+        this->hybridAnomalyDetector = new HybridAnomalyDetector();
+        this->anomalyReportVec = vector<AnomalyReport>();
         this->correlation = &hybridAnomalyDetector->thresholdDetector;
         this->buildCommandVector();
     };
 
     void start();
 
-    //////////////////////////////////////////////////////remember to free
-    virtual ~CLI(){
+    virtual ~CLI() {
+        delete this->hybridAnomalyDetector;
+        for (Command *command: this->commandsVector) {
+            delete command;
+        }
     };
 };
 

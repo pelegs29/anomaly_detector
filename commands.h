@@ -264,7 +264,7 @@ public:
         vector<pair<int, int>> vectorResult = vector<pair<int, int>>();
         this->getDefaultIO()->write("Please upload your local anomalies file.\n");
         string inputRead;
-        // get the path csv from the user
+        // get the path csv from the usr
         inputRead = "trueAnomaly.csv";
         this->readCSV(inputRead);
         this->getDefaultIO()->write("Upload complete.\n");
@@ -279,7 +279,7 @@ public:
             vector<int> input = strVecToIntVec(*inputVector);
             pair<int, int> pair = make_pair(input[0], input[1]);
             vectorResult.push_back(pair);
-            free(inputVector);
+            delete inputVector;
         }
         inputFile.close();
         return vectorResult;
