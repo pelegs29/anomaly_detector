@@ -21,7 +21,7 @@ vector<string> strToVec(string input, const char *separator) {
 vector<int> strVecToIntVec(vector<string> &orgVector) {
     vector<int> newVector;
     newVector.reserve(orgVector.size());
-for (string &value: orgVector) {
+    for (string &value: orgVector) {
         newVector.emplace_back(stoi(value));
     }
     return newVector;
@@ -129,20 +129,25 @@ bool isIntersection(pair<int, int> result, pair<int, int> reporting) {
     }
     return false;
 }
-string floatToStringSub (float num){
-    vector<string> vec = strToVec(to_string(num),".");
-    vec[1] = vec[1].substr(0,3);
+
+string floatToStringSub(float num) {
+    bool changed = false;
+    vector<string> vec = strToVec(to_string(num), ".");
+    vec[1] = vec[1].substr(0, 3);
     string str = vec[1];
-    //string* str = &vec[1];
-    char* ptrChar = &str[0];
-    for (int i = (int)vec[1].size()-1; i >0 ; --i) {
-        if (ptrChar[i] != 48){
-            vec[1] = vec[1].substr(0,i);
+    char *ptrChar = &str[0];
+    for (int i = (int) strlen(ptrChar) - 1; i >= 0; --i) {
+        if (ptrChar[i] != '0') {
+            vec[1] = vec[1].substr(0, i + 1);
+            changed = true;
             break;
         }
     }
-    return vec[0]+"."+vec[1];
+    if (!changed)
+        return vec[0];
+    return vec[0] + "." + vec[1];
 }
+
 void resultCommand::execute() {
 
     //get the input from the user and return a vector contain a pair <star anomaly, end anomaly>)
