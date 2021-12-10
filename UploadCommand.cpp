@@ -130,7 +130,7 @@ bool isIntersection(pair<int, int> result, pair<int, int> reporting) {
     return false;
 }
 string floatToStringSub (float num){
-    vector<string> vec = inputString(to_string(num),".");
+    vector<string> vec = strToVec(to_string(num),".");
     vec[1] = vec[1].substr(0,3);
     string str = vec[1];
     //string* str = &vec[1];
