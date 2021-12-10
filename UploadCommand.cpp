@@ -133,10 +133,19 @@ bool isIntersection(pair<int, int> result, pair<int, int> reporting) {
     }
     return false;
 }
-string floatToString (float num){
+string floatToStringSub (float num){
     vector<string> vec = inputString(to_string(num),".");
-
-
+    vec[1] = vec[1].substr(0,3);
+    string str = vec[1];
+    //string* str = &vec[1];
+    char* ptrChar = &str[0];
+    for (int i = (int)vec[1].size()-1; i >0 ; --i) {
+        if (ptrChar[i] != 48){
+            vec[1] = vec[1].substr(0,i);
+            break;
+        }
+    }
+    return vec[0]+"."+vec[1];
 }
 void resultCommand::execute() {
 
@@ -157,8 +166,9 @@ void resultCommand::execute() {
     float FP = mergeReportVec.size() - TP;
     float TPR = TP / vectorResult.size();
     float FPN = FP / n;
-
-    this->getDefaultIO()->write("True Positive Rate: " + to_string(TPR). + "\n");
-    this->getDefaultIO()->write("False Positive Rate: " + to_string(FPN) + "\n");
+    string TPRstring = floatToStringSub(TPR);
+    string FPNstring = floatToStringSub(FPN);
+    this->getDefaultIO()->write("True Positive Rate: " + TPRstring + "\n");
+    this->getDefaultIO()->write("False Positive Rate: " + FPNstring + "\n");
 
 }
