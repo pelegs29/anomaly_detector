@@ -15,42 +15,47 @@
 
 using namespace std;
 
-class TimeSeries{
+class TimeSeries {
 
 
 private:
     vector<string> categoryNames;
-    vector<pair<string,vector<float>>> data;
+    vector<pair<string, vector<float>>> data;
 public:
     //function
-    vector<pair<string,vector<float>>> read_csv(const string& filename) const;
+    vector<pair<string, vector<float>>> read_csv(const string &filename) const;
+
     //constructor
-    explicit TimeSeries(const char* CSVfileName){
+    explicit TimeSeries(const char *CSVfileName) {
         this->categoryNames;
-        this->data =  read_csv(CSVfileName);
+        this->data = read_csv(CSVfileName);
 
     }
 
-    vector<pair<string,vector<float>>> getData() const{
+    vector<pair<string, vector<float>>> getData() const {
         return this->data;
     }
-    void buildData(const char* CSVfileName){
+
+    void buildData(const char *CSVfileName) {
         this->data = read_csv(CSVfileName);
     }
 
     //return the number of item in the Feature column
-    int getFeatureSizeColum(){
+    int getFeatureSizeColum() {
         vector<float> vector = this->data.begin()->second;
         return vector.size();
 
     }
+
     float getInfo(float time, string category) const;
+
     float getInfoByRow(int row, string category) const;
-    int getCategoryIndexRow (const string& vecName) const;
+
+    int getCategoryIndexRow(const string &vecName) const;
 
 
-        //Destructors
-    ~TimeSeries(){
+    //Destructors
+    ~TimeSeries() {
     }
 };
 

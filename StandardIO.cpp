@@ -14,12 +14,7 @@ void StandardIO::write(string text) {
     cout << text;
 }
 
+void StandardIO::write(float f) {}
 
-void StandardIO::write(float f) {
-
-}
-
-void StandardIO::read(float *f) {
-
-}
+void StandardIO::read(float *f) {}
 

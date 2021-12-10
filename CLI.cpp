@@ -30,10 +30,10 @@ int returnOption(string input) {
 
 void CLI::start() {
     while (true) {
-        this->dio->write("Welcome to the Anomaly Detection Server.\nPlease choose an option:\n" );
+        this->dio->write("Welcome to the Anomaly Detection Server.\nPlease choose an option:\n");
         int currentIndex = 1;
         for (Command *cmd: commandsVector) {
-            this->dio->write(to_string(currentIndex)+ "." + cmd->getDesc()+ "\n");
+            this->dio->write(to_string(currentIndex) + "." + cmd->getDesc() + "\n");
             currentIndex++;
         }
         this->dio->write(to_string(currentIndex) + ".exit\n");
