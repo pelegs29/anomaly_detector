@@ -119,12 +119,14 @@ vector<pair<int, int>> resultCommand::inputAnomaly() {
 }
 
 bool isIntersection(pair<int, int> result, pair<int, int> reporting) {
+    //case - there is a full  contain
     if ((result.first >= reporting.first && result.second <= reporting.second) ||
         (result.first <= reporting.first && result.second >= reporting.second)) {
         return true;
     }
+    //case 2  - partial Intersection
     if ((result.first <= reporting.first && result.second >= reporting.first) ||
-        (result.first >= reporting.first && result.first <= reporting.second)) {
+        (result.first <= reporting.second && result.second >= reporting.second)) {
         return true;
     }
     return false;
@@ -165,7 +167,7 @@ void resultCommand::execute() {
     int n = this->ptrHybrid->EventNum;
     //roundf(x * 100) / 100.0
     float FP = mergeReportVec.size() - TP;
-    float TPR = TP / vectorResult.size();
+    float TPR = (float)TP /vectorResult.size();
     float FPN = FP / n;
     string TPRstring = floatToStringSub(TPR);
     string FPNstring = floatToStringSub(FPN);
