@@ -63,8 +63,8 @@ public:
         return correlation;
     }
 
-    void setCorrelation(float *correlationInput) {
-        this->correlation = correlationInput;
+    void setCorrelation(float correlationInput) {
+        *this->correlation = correlationInput;
     }
 
 };
@@ -166,7 +166,7 @@ public:
             newCorrelation = this->getDefaultIO()->read();
             numInput = (float) stoi(&newCorrelation[0]);
         }
-        this->data->setCorrelation(&numInput);
+        this->data->setCorrelation(numInput);
     }
 };
 
