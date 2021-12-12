@@ -3,7 +3,6 @@
 
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
-
 #include <iostream>
 #include <cstring>
 #include <fstream>

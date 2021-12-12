@@ -121,9 +121,10 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
  * @param thresholdDetectorNew new threshold if need to change from the base value (0.9)
  */
 void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts, float thresholdDetectorNew) {
+    float tempThreshold = this->thresholdDetector;
     this->thresholdDetector = thresholdDetectorNew;
     SimpleAnomalyDetector::learnNormal(ts);
-    //this->learnNormal(ts);
+    this->changeThreshold(tempThreshold);
 }
 /**
  * return true if there is Anomaly
