@@ -46,7 +46,7 @@ public:
         delete this->hybridAnomalyDetector;
     }
 
-    HybridAnomalyDetector *getHybridAnomalyDetector()  {
+    HybridAnomalyDetector *getHybridAnomalyDetector() {
         return this->hybridAnomalyDetector;
     }
 
@@ -59,7 +59,7 @@ public:
         this->anomalyReportVec = std::move(ReportVec);
     }
 
-    float *getCorrelation()  {
+    float *getCorrelation() {
         return correlation;
     }
 
@@ -178,6 +178,9 @@ public:
     HybridCommand(DefaultIO *dio, CLI_Data *data) :
             Command(dio, "detect anomalies", data) {};
 
+    /**
+     * this execution method will train and test the csv.
+     */
     virtual void execute() override {
         TimeSeries tsTrain = TimeSeries("anomalyTrain.csv");
         data->getHybridAnomalyDetector()->learnNormal(tsTrain);
@@ -196,6 +199,9 @@ public:
     anomalyCommand(DefaultIO *dio, CLI_Data *data) :
             Command(dio, "display results", data) {};
 
+    /**
+     * this execute command will print the anomaly report through the default IO.
+     */
     virtual void execute() override {
         for (const AnomalyReport &report: data->getAnomalyReportVec()) {
             int row = report.timeStep;
@@ -212,8 +218,14 @@ public:
     resultCommand(DefaultIO *dio, CLI_Data *data) :
             Command(dio, "upload anomalies and analyze results", data) {};
 
+    /**
+     * this method will convert a string vector to integer vector
+     * @param orgVector inputted vector of string
+     * @return the same vector with integer values
+     */
     static vector<int> strVecToIntVec(vector<string> &orgVector) {
         vector<int> newVector;
+        // allocate space in memory for emplace back func.
         newVector.reserve(orgVector.size());
         for (string &value: orgVector) {
             newVector.emplace_back(stoi(value));
@@ -221,6 +233,12 @@ public:
         return newVector;
     }
 
+    /**
+     * this method will convert a given string seperated by the separator given into a vector of strings
+     * @param input string given.
+     * @param separator the indication for separation.
+     * @return vector of seperated strings.
+     */
     static vector<string> strToVec(string input, const char *separator) {
         vector<string> output;
         char *str = &input[0];
@@ -235,7 +253,11 @@ public:
         return output;
     }
 
-    //merge all the report with the same area of time and description
+    /**
+     * this method will merge all the reports with the same area of time and description
+     * @param reportVec the given reports vector
+     * @return vector of pairs of 2 integers and string representing the merged vector.
+     */
     static vector<pair<pair<int, int>, string>> mergeReport(vector<AnomalyReport> reportVec) {
         vector<pair<pair<int, int>, string>> mergeReport = vector<pair<pair<int, int>, string>>();
         mergeReport.emplace_back(make_pair(reportVec[0].timeStep, reportVec[0].timeStep),
@@ -253,6 +275,13 @@ public:
         return mergeReport;
     }
 
+    /**
+     * this method will check if an intersection is present in two pairs of int,
+     * each pair representing range from int1 to int2
+     * @param result result pair
+     * @param reporting reporting pair
+     * @return true is an intersection is present or false otherwise.
+     */
     static bool isIntersection(pair<int, int> result, pair<int, int> reporting) {
         //case - there is a full  contain
         if ((result.first >= reporting.first && result.second <= reporting.second) ||
@@ -267,12 +296,18 @@ public:
         return false;
     }
 
+    /**
+     * this method will convert float to its string representation with precision of 3 numbers after the dot.
+     * @param num the given float number.
+     * @return a string representing the float number with precision of 3.
+     */
     static string floatToStringSub(float num) {
         bool changed = false;
         vector<string> vec = strToVec(to_string(num), ".");
         vec[1] = vec[1].substr(0, 3);
         string str = vec[1];
         char *ptrChar = &str[0];
+        // loop that go over each char in the string
         for (int i = (int) strlen(ptrChar) - 1; i >= 0; --i) {
             if (ptrChar[i] != '0') {
                 vec[1] = vec[1].substr(0, i + 1);
@@ -285,17 +320,21 @@ public:
         return vec[0] + "." + vec[1];
     }
 
-
+    /**
+     * this method will receive from the user using the DefaultIO the anomalies and creates
+     * output vector containing pairs.
+     * @return vector of pairs, each pair contain the start and end point of an anomaly.
+     */
     vector<pair<int, int>> inputAnomaly() {
         vector<pair<int, int>> vectorResult = vector<pair<int, int>>();
         this->getDefaultIO()->write("Please upload your local anomalies file.\n");
-        string inputRead;
-        // get the path csv from the usr
-        inputRead = "trueAnomaly.csv";
-        this->readCSV(inputRead);
+        string fileName;
+        // get the path csv from the user
+        fileName = "trueAnomaly.csv";
+        this->readCSV(fileName);
         this->getDefaultIO()->write("Upload complete.\n");
 
-        //star read the file
+        //start to read the file
         ifstream inputFile("trueAnomaly.csv"); // the file that I need to upload to the server
         // Open an existing file
         if (!inputFile.is_open()) throw runtime_error("Could not open file");
@@ -311,6 +350,11 @@ public:
         return vectorResult;
     }
 
+    /**
+     * this method get the anomalies from the user, merge the conducted report and checks for any intersections
+     * between the two.
+     * at the end of the execution the method will write the true and negative rate.
+     */
     virtual void execute() override {
         //get the input from the user and return a vector contain a pair <star anomaly, end anomaly>)
         vector<pair<int, int>> vectorResult = inputAnomaly();
