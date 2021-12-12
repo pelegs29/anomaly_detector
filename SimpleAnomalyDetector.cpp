@@ -24,6 +24,7 @@ correlatedFeatures::correlatedFeatures(string feature1, string feature2, float c
 
 //constructor
 SimpleAnomalyDetector::SimpleAnomalyDetector() {
+    this->thresholdDetector = CORR_THRESHOLD;
     vector<correlatedFeatures> correlatedFeatures;
     this->cf = correlatedFeatures;
 }

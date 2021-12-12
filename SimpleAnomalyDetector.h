@@ -30,7 +30,7 @@ class SimpleAnomalyDetector : public TimeSeriesAnomalyDetector {
 
 public:
     vector<correlatedFeatures> cf;
-    float thresholdDetector = CORR_THRESHOLD;
+    float thresholdDetector;
     int EventNum; //check if that need to be private
 
     SimpleAnomalyDetector();
