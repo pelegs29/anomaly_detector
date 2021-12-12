@@ -7,8 +7,10 @@
 
 #include <string>
 #include <vector>
-#include "timeseries.h"
 #include <cmath>
+
+#include "timeseries.h"
+
 using namespace std;
 
 

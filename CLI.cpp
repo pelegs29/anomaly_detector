@@ -7,15 +7,15 @@
 using namespace std;
 
 void CLI::buildCommandVector() {
-    Command *upload = new UploadCommand(this->dio);
+    Command *upload = new UploadCommand(this->dio, this->data);
     this->commandsVector.push_back(upload);
-    Command *corle = new correlCommand(this->dio, this->correlation);
-    this->commandsVector.push_back(corle);
-    Command *detect = new HybridCommand(this->dio, this->hybridAnomalyDetector, &this->anomalyReportVec);
+    Command *correlation = new correlationCommand(this->dio, this->data);
+    this->commandsVector.push_back(correlation);
+    Command *detect = new HybridCommand(this->dio, this->data);
     this->commandsVector.push_back(detect);
-    Command *anomaly = new anomalyCommand(this->dio, &this->anomalyReportVec);
+    Command *anomaly = new anomalyCommand(this->dio, this->data);
     this->commandsVector.push_back(anomaly);
-    Command *resultAnomaly = new resultCommand(this->dio, this->hybridAnomalyDetector, &this->anomalyReportVec);
+    Command *resultAnomaly = new resultCommand(this->dio, this->data);
     this->commandsVector.push_back(resultAnomaly);
 }
 
@@ -39,8 +39,10 @@ void CLI::start() {
         this->dio->write(to_string(currentIndex) + ".exit\n");
         int input;
         input = returnOption(dio->read());
-        if (input == -1)
-            throw "Option given is not valid";
+        if (input == -1) {
+            this->dio->write("Option given is not valid");
+            continue;
+        }
         if (input == commandsVector.size() + 1)
             break;
         commandsVector[input - 1]->execute();

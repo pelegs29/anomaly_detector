@@ -3,6 +3,7 @@
 
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
+
 #include <iostream>
 #include <cstring>
 #include <fstream>
@@ -26,20 +27,57 @@ public:
 
     virtual ~DefaultIO() = default;
 
-    // you may add additional methods here
+    // add upload and download methods.
 };
 
-// you may edit this class
-class Command {
+class CLI_Data {
+    HybridAnomalyDetector *hybridAnomalyDetector;
+    vector<AnomalyReport> anomalyReportVec;
+    float *correlation;
+public:
+    CLI_Data() {
+        this->hybridAnomalyDetector = new HybridAnomalyDetector();
+        this->anomalyReportVec = vector<AnomalyReport>();
+        this->correlation = &hybridAnomalyDetector->thresholdDetector;
+    }
 
+    virtual ~CLI_Data() {
+        delete this->hybridAnomalyDetector;
+    }
+
+    HybridAnomalyDetector *getHybridAnomalyDetector()  {
+        return this->hybridAnomalyDetector;
+    }
+
+
+    vector<AnomalyReport> getAnomalyReportVec() {
+        return this->anomalyReportVec;
+    }
+
+    void setAnomalyReportVec(vector<AnomalyReport> ReportVec) {
+        CLI_Data::anomalyReportVec = ReportVec;
+    }
+
+    float *getCorrelation()  {
+        return correlation;
+    }
+
+    void setCorrelation(float *correlationInput) {
+        CLI_Data::correlation = correlationInput;
+    }
+
+};
+
+
+class Command {
     string description;
     DefaultIO *dio;
-
+protected:
+    CLI_Data *data;
 public:
-
     // constructor
-    Command(DefaultIO *dioIn, string descIn) {
-        //dio(dio), description(desc)
+    Command(DefaultIO *dioIn, const string &descIn, CLI_Data *dataIn) {
+        data = dataIn;
         description = descIn;
         dio = dioIn;
     }
@@ -56,97 +94,94 @@ public:
         return this->dio;
     }
 
-    void readCSV(string text) {
-        //vector<string> input = inputString(text);
-        //string src = input[0];
-        //string desName = input[1];
+    /**
+     * this method reads from the DefaultIO given the CSV file,
+     * each iteration reading a line using the IO.read() func,
+     * until the last line given (last line is "done").
+     * @param fileName the given file name to write.
+     */
+    void readCSV(const string &fileName) {
         // File input pointer
-        ofstream outfile(text);
-        //ifstream inputFile(src); // the file that I need to upload to the server
-        // Open an existing file
-        //if(!inputFile.is_open()) throw runtime_error("Could not open file");
+        ofstream outfile(fileName);
         string line;
         while (true) {
             line = this->getDefaultIO()->read();
             if (line == "done") {
                 break;
             }
+            // concat \n at the end of each line.
             outfile << line + "\n";
         }
         outfile.close();
-        //inputFile.close();
     }
 };
 
 class UploadCommand : public Command {
-    //const string description = "upload a time series csv file";
 public:
 
     //constructor
-    explicit UploadCommand(DefaultIO *dio) :
-            Command(dio, "upload a time series csv file") {
+    explicit UploadCommand(DefaultIO *dio, CLI_Data *data) :
+            Command(dio, "upload a time series csv file", data) {
     };
 
+    /**
+     * this execute func creates 2 csv file : train and test,
+     * using the data received from the DefaultIO.
+     */
     virtual void execute() override {
         this->getDefaultIO()->write("Please upload your local train CSV file.\n");
-        string inputRead;
+        string fileName;
         // get the train csv from the user
-        inputRead = "anomalyTrain.csv";
-        this->readCSV(inputRead);
+        fileName = "anomalyTrain.csv";
+        this->readCSV(fileName);
         this->getDefaultIO()->write("Upload complete.\n");
 
         // for the test file
         this->getDefaultIO()->write("Please upload your local test CSV file.\n");
         // get the input from the user
-        inputRead = "anomalyTest.csv";
-        this->readCSV(inputRead);
+        fileName = "anomalyTest.csv";
+        this->readCSV(fileName);
         this->getDefaultIO()->write("Upload complete.\n");
     }
 };
 
-
-///need check if there is need to new file
-class correlCommand : public Command {
-    float *correlation;
+class correlationCommand : public Command {
 public:
-    correlCommand(DefaultIO *dio, float *cor) :
-            Command(dio, "algorithm settings") {
-        this->correlation = cor;
-    };
+    correlationCommand(DefaultIO *dio, CLI_Data *data) :
+            Command(dio, "algorithm settings", data) {};
 
+    /**
+     * this exec func will execute the functionality of correlation threshold change.
+     */
     virtual void execute() override {
-        this->getDefaultIO()->write("The current correlation threshold is " + to_string(*this->correlation) + "\n");
+        this->getDefaultIO()->write("The current correlation threshold is " +
+                                    to_string(*this->data->getCorrelation()) + "\n");
         this->getDefaultIO()->write("Type a new threshold\n");
-        string intput = this->getDefaultIO()->read();
-        float numInput = stof(&intput[0]);
+        string newCorrelation = this->getDefaultIO()->read();
+        float numInput = stof(&newCorrelation[0]);
         //if the input is not 0-1 the user need to enter again
         while (1 < numInput || 0 > numInput) {
             this->getDefaultIO()->write("please choose a value between 0 and 1.\n");
-            intput = this->getDefaultIO()->read();
-            numInput = (float) stoi(&intput[0]);
+            newCorrelation = this->getDefaultIO()->read();
+            numInput = (float) stoi(&newCorrelation[0]);
         }
-        *this->correlation = numInput;
+        this->data->setCorrelation(&numInput);
     }
 };
 
 
 class HybridCommand : public Command {
 public:
-    HybridAnomalyDetector *ptrHybrid;
-    vector<AnomalyReport> *anomalyVec;
 
     //constructor
-    HybridCommand(DefaultIO *dio, HybridAnomalyDetector *ptr, vector<AnomalyReport> *ptrAnomaly) :
-            Command(dio, "detect anomalies") {
-        this->ptrHybrid = ptr;
-        anomalyVec = ptrAnomaly;
-    };
+    HybridCommand(DefaultIO *dio, CLI_Data *data) :
+            Command(dio, "detect anomalies", data) {};
 
     virtual void execute() override {
         TimeSeries tsTrain = TimeSeries("anomalyTrain.csv");
-        this->ptrHybrid->learnNormal(tsTrain);
+        data->getHybridAnomalyDetector()->learnNormal(tsTrain);
         TimeSeries tsTest = TimeSeries("anomalyTest.csv");
-        *this->anomalyVec = this->ptrHybrid->detect(tsTest);
+        data->setAnomalyReportVec(data->getHybridAnomalyDetector()->detect(tsTest));
         this->getDefaultIO()->write("anomaly detection complete.\n");
     }
 
@@ -155,16 +190,13 @@ public:
 
 class anomalyCommand : public Command {
 public:
-    vector<AnomalyReport> *anomalyVec;
 
     //constructor
-    anomalyCommand(DefaultIO *dio, vector<AnomalyReport> *pVector) :
-            Command(dio, "display results") {
-        this->anomalyVec = pVector;
-    };
+    anomalyCommand(DefaultIO *dio, CLI_Data *data) :
+            Command(dio, "display results", data) {};
 
     virtual void execute() override {
-        for (const AnomalyReport &report: *this->anomalyVec) {
+        for (const AnomalyReport &report: data->getAnomalyReportVec()) {
             int row = report.timeStep;
             this->getDefaultIO()->write(to_string(row) + "\t" + report.description + "\n");
         }
@@ -175,15 +207,9 @@ public:
 
 class resultCommand : public Command {
 public:
-    HybridAnomalyDetector *ptrHybrid;
-    vector<AnomalyReport> *anomalyVec;
-
     //constructor
-    resultCommand(DefaultIO *dio, HybridAnomalyDetector *ptr, vector<AnomalyReport> *pVector) :
-            Command(dio, "upload anomalies and analyze results") {
-        this->ptrHybrid = ptr;
-        this->anomalyVec = pVector;
-    };
+    resultCommand(DefaultIO *dio, CLI_Data *data) :
+            Command(dio, "upload anomalies and analyze results", data) {};
 
     static vector<int> strVecToIntVec(vector<string> &orgVector) {
         vector<int> newVector;
@@ -287,7 +313,7 @@ public:
     virtual void execute() override {
         //get the input from the user and return a vector contain a pair <star anomaly, end anomaly>)
         vector<pair<int, int>> vectorResult = inputAnomaly();
-        vector<pair<pair<int, int>, string>> mergeReportVec = mergeReport(*this->anomalyVec);
+        vector<pair<pair<int, int>, string>> mergeReportVec = mergeReport(data->getAnomalyReportVec());
         int TP = 0;
         //check the intersection with the result from the detector
         for (const pair<pair<int, int>, string> &reporting: mergeReportVec) {
@@ -297,8 +323,7 @@ public:
                 }
             }
         }
-        int n = this->ptrHybrid->EventNum;
-        //roundf(x * 100) / 100.0
+        int n = data->getHybridAnomalyDetector()->EventNum;
         float FP = (float) mergeReportVec.size() - (float) TP;
         float TPR = (float) TP / (float) vectorResult.size();
         float FPN = FP / (float) n;
