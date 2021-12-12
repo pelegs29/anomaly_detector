@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstring>
 #include <fstream>
+#include <utility>
 #include <vector>
 #include <utility>
 
@@ -50,12 +51,12 @@ public:
     }
 
 
-    vector<AnomalyReport> getAnomalyReportVec() {
-        return this->anomalyReportVec;
+    vector<AnomalyReport> &getAnomalyReportVec() {
+        return anomalyReportVec;
     }
 
     void setAnomalyReportVec(vector<AnomalyReport> ReportVec) {
-        CLI_Data::anomalyReportVec = ReportVec;
+        this->anomalyReportVec = std::move(ReportVec);
     }
 
     float *getCorrelation()  {
@@ -63,7 +64,7 @@ public:
     }
 
     void setCorrelation(float *correlationInput) {
-        CLI_Data::correlation = correlationInput;
+        this->correlation = correlationInput;
     }
 
 };
