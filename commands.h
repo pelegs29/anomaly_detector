@@ -204,7 +204,7 @@ public:
      */
     virtual void execute() override {
         for (const AnomalyReport &report: data->getAnomalyReportVec()) {
-            int row = report.timeStep;
+            long row = report.timeStep;
             this->getDefaultIO()->write(to_string(row) + "\t" + report.description + "\n");
         }
         this->getDefaultIO()->write("Done.\n");
@@ -265,7 +265,7 @@ public:
         int index = 0;
         for (int i = 1; i < reportVec.size(); ++i) {
             if (reportVec[i - 1].description == reportVec[i].description) {
-                mergeReport[index].first.second = reportVec[i].timeStep;
+                mergeReport[index].first.second = (int)reportVec[i].timeStep;
             } else {
                 mergeReport.emplace_back(make_pair(reportVec[i].timeStep, reportVec[i].timeStep),
                                          reportVec[i].description);
