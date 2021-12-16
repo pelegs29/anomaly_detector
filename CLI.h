@@ -25,12 +25,7 @@ public:
 
     void start();
 
-    virtual ~CLI() {
-        delete this->data;
-        for (Command *command: this->commandsVector) {
-            delete command;
-        }
-    };
+    virtual ~CLI();
 };
 
 
