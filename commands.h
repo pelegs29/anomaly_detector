@@ -155,6 +155,7 @@ public:
      * this exec func will execute the functionality of correlation threshold change.
      */
     virtual void execute() override {
+        string  check = to_string(*this->data->getCorrelation());
         this->getDefaultIO()->write("The current correlation threshold is " +
                                     to_string(*this->data->getCorrelation()) + "\n");
         this->getDefaultIO()->write("Type a new threshold\n");
