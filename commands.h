@@ -155,18 +155,20 @@ public:
      * this exec func will execute the functionality of correlation threshold change.
      */
     virtual void execute() override {
-        this->getDefaultIO()->write("The current correlation threshold is " +
-                                    to_string(*this->data->getCorrelation()) + "\n");
-        this->getDefaultIO()->write("Type a new threshold\n");
-        string newCorrelation = this->getDefaultIO()->read();
-        float numInput = stof(&newCorrelation[0]);
-        //if the input is not 0-1 the user need to enter again
-        while (1 < numInput || 0 > numInput) {
-            this->getDefaultIO()->write("please choose a value between 0 and 1.\n");
-            newCorrelation = this->getDefaultIO()->read();
-            numInput = (float) stoi(&newCorrelation[0]);
+        bool gotValid = false;
+        while (!gotValid) {
+            this->getDefaultIO()->write("The current correlation threshold is ");
+            this->getDefaultIO()->write(*this->data->getCorrelation());
+            this->getDefaultIO()->write("\nType a new threshold\n");
+            float newCorrelation = stof(this->getDefaultIO()->read());
+            //if the input is not 0-1 the user need to enter again
+            if (0 < newCorrelation && 1 >= newCorrelation) {
+                this->data->setCorrelation(newCorrelation);
+                gotValid = true;
+            } else {
+                this->getDefaultIO()->write("please choose a value between 0 and 1.\n");
+            }
         }
-        this->data->setCorrelation(numInput);
     }
 };
 
@@ -204,8 +206,8 @@ public:
      */
     virtual void execute() override {
         for (const AnomalyReport &report: data->getAnomalyReportVec()) {
-            long row = report.timeStep;
-            this->getDefaultIO()->write(to_string(row) + "\t" + report.description + "\n");
+            this->getDefaultIO()->write((float) report.timeStep);
+            this->getDefaultIO()->write("\t" + report.description + "\n");
         }
         this->getDefaultIO()->write("Done.\n");
     }
@@ -265,7 +267,7 @@ public:
         int index = 0;
         for (int i = 1; i < reportVec.size(); ++i) {
             if (reportVec[i - 1].description == reportVec[i].description) {
-                mergeReport[index].first.second = (int)reportVec[i].timeStep;
+                mergeReport[index].first.second = (int) reportVec[i].timeStep;
             } else {
                 mergeReport.emplace_back(make_pair(reportVec[i].timeStep, reportVec[i].timeStep),
                                          reportVec[i].description);
@@ -294,30 +296,6 @@ public:
             return true;
         }
         return false;
-    }
-
-    /**
-     * this method will convert float to its string representation with precision of 3 numbers after the dot.
-     * @param num the given float number.
-     * @return a string representing the float number with precision of 3.
-     */
-    static string floatToStringSub(float num) {
-        bool changed = false;
-        vector<string> vec = strToVec(to_string(num), ".");
-        vec[1] = vec[1].substr(0, 3);
-        string str = vec[1];
-        char *ptrChar = &str[0];
-        // loop that go over each char in the string
-        for (int i = (int) strlen(ptrChar) - 1; i >= 0; --i) {
-            if (ptrChar[i] != '0') {
-                vec[1] = vec[1].substr(0, i + 1);
-                changed = true;
-                break;
-            }
-        }
-        if (!changed)
-            return vec[0];
-        return vec[0] + "." + vec[1];
     }
 
     /**
@@ -371,14 +349,14 @@ public:
         }
         int n = data->getHybridAnomalyDetector()->EventNum;
         float FP = (float) mergeReportVec.size() - (float) TP;
-        float TPR = (float) TP / (float) vectorResult.size();
-        float FPN = FP / (float) n;
-        string TPRstring = floatToStringSub(TPR);
-        string FPNstring = floatToStringSub(FPN);
-        this->getDefaultIO()->write("True Positive Rate: " + TPRstring + "\n");
-        this->getDefaultIO()->write("False Positive Rate: " + FPNstring + "\n");
+        float TPR = ((int) (1000.0 * TP / vectorResult.size()) / 1000.0f);
+        float FPR = ((int) (1000.0 * FP / n) / 1000.0f);
+        this->getDefaultIO()->write("True Positive Rate: ");
+        this->getDefaultIO()->write(TPR);
+        this->getDefaultIO()->write("\nFalse Positive Rate: ");
+        this->getDefaultIO()->write(FPR);
+        this->getDefaultIO()->write("\n");
     }
-
 };
 
 #endif /* COMMANDS_H_ */
