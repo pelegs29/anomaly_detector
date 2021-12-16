@@ -49,4 +49,12 @@ void CLI::start() {
     }
 }
 
+CLI::~CLI() {
+    delete this->data;
+    for (Command *command: this->commandsVector) {
+        delete command;
+    }
+}
+
+
 
