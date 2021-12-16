@@ -365,6 +365,7 @@ public:
             for (pair<int, int> result: vectorResult) {
                 if (isIntersection(reporting.first, result)) {
                     TP++;
+                    break;
                 }
             }
         }
