@@ -163,3 +163,8 @@ int TimeSeries::getCategoryIndexRow(const string &vecName) const {
     return 0;
 }
 
+int TimeSeries::getRowSize() const {
+    return (int) this->data[0].second.size();
+}
+
+

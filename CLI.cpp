@@ -11,7 +11,7 @@ void CLI::buildCommandVector() {
     this->commandsVector.push_back(upload);
     Command *correlation = new correlationCommand(this->dio, this->data);
     this->commandsVector.push_back(correlation);
-    Command *detect = new HybridCommand(this->dio, this->data);
+    Command *detect = new DetectCommand(this->dio, this->data);
     this->commandsVector.push_back(detect);
     Command *anomaly = new anomalyCommand(this->dio, this->data);
     this->commandsVector.push_back(anomaly);
