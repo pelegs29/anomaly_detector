@@ -6,6 +6,7 @@
 
 
 #include <thread>
+#include "CLI.h"
 
 using namespace std;
 
@@ -20,36 +21,47 @@ public:
 class AnomalyDetectionHandler : public ClientHandler {
 public:
     virtual void handle(int clientID) {
-
+        SocketIO sockIO;
+        CLI handlerAPI;
     }
 };
 
 
 // implement on Server.cpp
 class Server {
+    bool shouldStop;
+    int clientLimit;
+    int port;
+
+protected:
     thread *t; // the thread to run the start() method in
+    int server_fd;
+    struct sockaddr_in serverAddress;
+    struct sockaddr_in clientAddress;
 
     // you may add data members
 
 public:
-    Server(int port) throw(const char *);
+    explicit Server(int port) throw(const char *);
 
     virtual ~Server();
 
     virtual void start(ClientHandler &ch) throw(const char *);
 
     virtual void stop();
+
+    void initServer(int portGiven, int *serverFileDesc, struct sockaddr_in *address);
 };
 
 class ThreadedServer : public Server {
+    int port;
+    int clientID;
 public:
-    ThreadedServer(int port) : Server(port) {
-
-    }
+    explicit ThreadedServer(int port, int clientID);
 
     void start(ClientHandler &ch) throw(const char *);
 
-    void ~ThreadedServer();
+    virtual ~ThreadedServer();
 
     void stop();
 };
