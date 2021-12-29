@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 #include <utility>
+#include <sys/socket.h>
+
 
 #include "HybridAnomalyDetector.h"
 #include "timeseries.h"
@@ -28,28 +30,67 @@ public:
 
     virtual ~DefaultIO() = default;
 
-    // add upload and download methods.
 };
 
+class SocketIO : public DefaultIO {
+    int clientID;
+public:
+
+    SocketIO(int clientID) {
+        this->clientID = clientID;
+    }
+
+    virtual string read() {
+        int status;
+        char buff = '0';
+        string input;
+        status = recv(clientID, &buff, sizeof(buff), 0);
+        while (status) {
+            input += buff;
+            if (buff == '\n') {
+                break;
+            }
+            status = recv(clientID, &buff, sizeof(buff), 0);
+        }
+        return input;
+    }
+
+    virtual void read(float *f) {
+        recv(clientID, &f, sizeof(f), 0);
+    }
+
+    virtual void write(string text) {
+        send(clientID, &text, text.size(), 0);
+    }
+
+    virtual void write(float f) {
+        send(clientID, &f, sizeof(f), 0);
+    }
+
+};
+
+
 class CLI_Data {
-    HybridAnomalyDetector *hybridAnomalyDetector;
     vector<AnomalyReport> anomalyReportVec;
-    float *correlation;
+    float correlation;
+    // the number of rows in data csv
+    int eventsCount;
 public:
     CLI_Data() {
-        this->hybridAnomalyDetector = new HybridAnomalyDetector();
         this->anomalyReportVec = vector<AnomalyReport>();
-        this->correlation = &hybridAnomalyDetector->thresholdDetector;
+        this->correlation = CORR_THRESHOLD;
+        this->eventsCount = 0;
     }
 
-    virtual ~CLI_Data() {
-        delete this->hybridAnomalyDetector;
+    virtual ~CLI_Data() {}
+
+    int getEventsCount() const {
+        return eventsCount;
     }
 
-    HybridAnomalyDetector *getHybridAnomalyDetector() {
-        return this->hybridAnomalyDetector;
+    void setEventsCount(int eventsCountInput) {
+        this->eventsCount = eventsCountInput;
     }
-
 
     vector<AnomalyReport> &getAnomalyReportVec() {
         return anomalyReportVec;
@@ -59,12 +100,12 @@ public:
         this->anomalyReportVec = std::move(ReportVec);
     }
 
-    float *getCorrelation() {
+    float getCorrelation() {
         return correlation;
     }
 
     void setCorrelation(float correlationInput) {
-        *this->correlation = correlationInput;
+        this->correlation = correlationInput;
     }
 
 };
@@ -158,11 +199,11 @@ public:
         bool gotValid = false;
         while (!gotValid) {
             this->getDefaultIO()->write("The current correlation threshold is ");
-            this->getDefaultIO()->write(*this->data->getCorrelation());
+            this->getDefaultIO()->write(this->data->getCorrelation());
             this->getDefaultIO()->write("\nType a new threshold\n");
             float newCorrelation = stof(this->getDefaultIO()->read());
             //if the input is not 0-1 the user need to enter again
-            if (0 < newCorrelation && 1 >= newCorrelation) {
+            if (0 <= newCorrelation && 1 >= newCorrelation) {
                 this->data->setCorrelation(newCorrelation);
                 gotValid = true;
             } else {
@@ -173,21 +214,24 @@ public:
 };
 
 
-class HybridCommand : public Command {
+class DetectCommand : public Command {
 public:
 
     //constructor
-    HybridCommand(DefaultIO *dio, CLI_Data *data) :
+    DetectCommand(DefaultIO *dio, CLI_Data *data) :
             Command(dio, "detect anomalies", data) {};
 
     /**
      * this execution method will train and test the csv.
      */
     virtual void execute() override {
+        HybridAnomalyDetector hybridDetector;
+        hybridDetector.setThreshold(data->getCorrelation());
         TimeSeries tsTrain = TimeSeries("anomalyTrain.csv");
-        data->getHybridAnomalyDetector()->learnNormal(tsTrain);
+        hybridDetector.learnNormal(tsTrain);
         TimeSeries tsTest = TimeSeries("anomalyTest.csv");
-        data->setAnomalyReportVec(data->getHybridAnomalyDetector()->detect(tsTest));
+        data->setEventsCount(tsTest.getRowSize());
+        data->setAnomalyReportVec(hybridDetector.detect(tsTest));
         this->getDefaultIO()->write("anomaly detection complete.\n");
     }
 
@@ -347,7 +391,10 @@ public:
                 }
             }
         }
-        int n = data->getHybridAnomalyDetector()->EventNum;
+        int n = data->getEventsCount();
+        for (pair<int, int> result: vectorResult) {
+            n = n - (result.second + 1 - result.first);
+        }
         float FP = (float) mergeReportVec.size() - (float) TP;
         float TPR = ((int) (1000.0 * TP / vectorResult.size()) / 1000.0f);
         float FPR = ((int) (1000.0 * FP / n) / 1000.0f);

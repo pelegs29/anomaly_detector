@@ -24,7 +24,7 @@ correlatedFeatures::correlatedFeatures(string feature1, string feature2, float c
 
 //constructor
 SimpleAnomalyDetector::SimpleAnomalyDetector() {
-    this->thresholdDetector = CORR_THRESHOLD;
+    this->threshold = CORR_THRESHOLD;
     vector<correlatedFeatures> correlatedFeatures;
     this->cf = correlatedFeatures;
 }
@@ -83,12 +83,11 @@ void SimpleAnomalyDetector::freePointsArr(Point **arr, int size) {
  */
 void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
     vector<correlatedFeatures> correlatedFound;
-    this->EventNum = ts.getData()[0].second.size(); //update the number of row (time) int the data
     vector<pair<string, vector<float>>> data = ts.getData();
     // flag -> if no correlativeDuo found
     for (int i = 0; i < data.size() - 1; ++i) {
         int correlativeDuo = -1;
-        float currentMax = this->thresholdDetector;
+        float currentMax = this->threshold;
         //pResult will hold the current correlation between feature i and j
         float pResult = 0;
         float *featureIArray = &data[i].second[0];
@@ -122,10 +121,10 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts) {
  * @param thresholdDetectorNew new threshold if need to change from the base value (0.9)
  */
 void SimpleAnomalyDetector::learnNormal(const TimeSeries &ts, float thresholdDetectorNew) {
-    float tempThreshold = this->thresholdDetector;
-    this->thresholdDetector = thresholdDetectorNew;
+    float tempThreshold = this->threshold;
+    this->threshold = thresholdDetectorNew;
     SimpleAnomalyDetector::learnNormal(ts);
-    this->changeThreshold(tempThreshold);
+    this->setThreshold(tempThreshold);
 }
 /**
  * return true if there is Anomaly
@@ -174,7 +173,7 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries &ts) {
     return vectorReport;
 }
 
-void SimpleAnomalyDetector::changeThreshold(float input) {
-    this->thresholdDetector = input;
+void SimpleAnomalyDetector::setThreshold(float input) {
+    this->threshold = input;
 }
 

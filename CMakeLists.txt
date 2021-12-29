@@ -20,4 +20,5 @@ add_executable(anomaly_detector
         CLI.h
         CLI.cpp
         commands.h
-        StandardIO.h StandardIO.cpp)
+        StandardIO.h StandardIO.cpp
+        Server.h Server.cpp)

@@ -53,6 +53,7 @@ public:
 
     int getCategoryIndexRow(const string &vecName) const;
 
+    int getRowSize() const;
 
     //Destructors
     ~TimeSeries() {

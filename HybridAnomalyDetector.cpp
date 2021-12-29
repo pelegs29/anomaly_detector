@@ -19,7 +19,7 @@ void HybridAnomalyDetector::learnNormal(const TimeSeries &ts) {
     SimpleAnomalyDetector::learnNormal(ts, 0.5);
     for (auto &features: this->cf) {
         // the threshold of the features is between 0.5 - 0.9 -> so we change his threshold to radius
-        if (features.corrlation > 0.5 && features.corrlation < this->thresholdDetector) {
+        if (features.corrlation > 0.5 && features.corrlation < this->threshold) {
             int size = ts.getData()[0].second.size();
             int index1 = ts.getCategoryIndexRow(features.feature1);
             int index2 = ts.getCategoryIndexRow(features.feature2);
@@ -44,13 +44,13 @@ void HybridAnomalyDetector::learnNormal(const TimeSeries &ts) {
 bool HybridAnomalyDetector::isThereAnomaly(Point featuresPoint, correlatedFeatures correlated) {
     //case 1
     bool simple = false;
-    if (correlated.corrlation >= this->thresholdDetector) {
+    if (correlated.corrlation >= this->threshold) {
         simple = SimpleAnomalyDetector::isThereAnomaly(featuresPoint, correlated);
     }
 
     // case 2 - check is the correlation between 0.5 -0.9 (the threshold of the detector)
     bool hybrid = false;
-    if (correlated.corrlation < this->thresholdDetector && correlated.corrlation > 0.5) {
+    if (correlated.corrlation < this->threshold && correlated.corrlation > 0.5) {
         auto *center = new Point(correlated.xCenter, correlated.yCenter);
         if (distancePoint(featuresPoint, *(center)) > correlated.threshold) {
             hybrid = true;}
