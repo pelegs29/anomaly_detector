@@ -41,16 +41,31 @@ public:
     }
 
     virtual string read() {
-        int valread;
-        char *buffer = new char[1024];
-        valread = recv(clientID, buffer, 1024, 0);
+        int status;
+        char buff = '0';
+        string input;
+        status = recv(clientID, &buff, sizeof(buff), 0);
+        while (status) {
+            input += buff;
+            if (buff == '\n') {
+                break;
+            }
+            status = recv(clientID, &buff, sizeof(buff), 0);
+        }
+        return input;
     }
 
-    virtual void write(string text) = 0;
+    virtual void read(float *f) {
+        recv(clientID, &f, sizeof(f), 0);
+    }
 
-    virtual void write(float f) = 0;
+    virtual void write(string text) {
+        send(clientID, &text, text.size(), 0);
+    }
 
-    virtual void read(float *f) = 0;
+    virtual void write(float f) {
+        send(clientID, &f, sizeof(f), 0);
+    }
 
 };
 
