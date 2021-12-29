@@ -21,8 +21,9 @@ public:
 class AnomalyDetectionHandler : public ClientHandler {
 public:
     virtual void handle(int clientID) {
-        SocketIO sockIO;
-        CLI handlerAPI;
+        SocketIO sockIO(clientID);
+        CLI handlerAPI(&sockIO);
+        handlerAPI.start();
     }
 };
 
@@ -42,11 +43,11 @@ protected:
     // you may add data members
 
 public:
-    explicit Server(int port) throw(const char *);
+    explicit Server(int port) ;
 
     virtual ~Server();
 
-    virtual void start(ClientHandler &ch) throw(const char *);
+    virtual void start(ClientHandler &ch) ;
 
     virtual void stop();
 
@@ -59,7 +60,7 @@ class ThreadedServer : public Server {
 public:
     explicit ThreadedServer(int port, int clientID);
 
-    void start(ClientHandler &ch) throw(const char *);
+    void start(ClientHandler &ch) ;
 
     virtual ~ThreadedServer();
 

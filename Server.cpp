@@ -40,14 +40,14 @@ void sigalarm_handler(int) {
     cout << "alarm fired" << endl;
 }
 
-Server::Server(int port) throw(const char *) {
+Server::Server(int port)  {
     this->shouldStop = false;
     this->port = port;
     this->clientLimit = 5; //TODO : check for real value 😃
     initServer(port, &this->server_fd, &this->serverAddress);
 }
 
-void Server::start(ClientHandler &ch) throw(const char *) {
+void Server::start(ClientHandler &ch)  {
     this->t = new thread([&ch, this]() {
         signal(SIGALRM, sigalarm_handler);
         while (!this->shouldStop) {
@@ -64,6 +64,7 @@ void Server::start(ClientHandler &ch) throw(const char *) {
             }
             alarm(0);
         }
+        close(this->server_fd);
     });
 }
 
@@ -81,11 +82,18 @@ ThreadedServer::ThreadedServer(int port, int clientID) : Server(port) {
     initServer(port, &this->server_fd, &this->serverAddress);
 }
 
-void ThreadedServer::start(ClientHandler &ch) throw(const char *) {
+void ThreadedServer::start(ClientHandler &ch)  {
     this->t = new thread([&ch, this]() {
                              ch.handle(this->clientID);
                              close(this->clientID);
                          }
     );
 }
+
+void ThreadedServer::stop() {
+    this->t->join();
+}
+
+ThreadedServer::~ThreadedServer() {
+};
 
