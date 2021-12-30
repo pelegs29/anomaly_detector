@@ -61,6 +61,7 @@ public:
 
     virtual void write(string text) {
         send(clientID, &text, text.size(), 0);
+        send(clientID, "\n", 1, 0);
     }
 
     virtual void write(float f) {
