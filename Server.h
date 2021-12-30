@@ -30,7 +30,7 @@ public:
 
 // implement on Server.cpp
 class Server {
-    bool shouldStop;
+    volatile bool shouldStop;
     int clientLimit;
     int port;
 

@@ -55,17 +55,17 @@ public:
         return input;
     }
 
-    virtual void read(float *f) {
-        recv(clientID, &f, sizeof(f), 0);
+    virtual void write(string text) {
+        send(clientID, text.c_str(), text.size(), 0);
     }
 
-    virtual void write(string text) {
-        send(clientID, &text, text.size(), 0);
-        send(clientID, "\n", 1, 0);
+    virtual void read(float *f) {
+        string input = read();
+        *f = stof(input);
     }
 
     virtual void write(float f) {
-        send(clientID, &f, sizeof(f), 0);
+        write(to_string(f));
     }
 
 };
