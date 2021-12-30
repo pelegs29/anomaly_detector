@@ -65,9 +65,11 @@ public:
     }
 
     virtual void write(float f) {
-        write(to_string(f));
+        ostringstream stringStream;
+        stringStream << f;
+        string out(stringStream.str());
+        write(out);
     }
-
 };
 
 
@@ -149,7 +151,7 @@ public:
         string line;
         while (true) {
             line = this->getDefaultIO()->read();
-            if (line == "done") {
+            if (line == "done" || line == "done\n") {
                 break;
             }
             // concat \n at the end of each line.
@@ -363,6 +365,8 @@ public:
         if (!inputFile.is_open()) throw runtime_error("Could not open file");
         string line;
         while (getline(inputFile, line)) {
+            if (line.empty())
+                continue;
             auto *inputVector = new vector<string>(strToVec(line, ","));
             vector<int> input = strVecToIntVec(*inputVector);
             pair<int, int> pair = make_pair(input[0], input[1]);

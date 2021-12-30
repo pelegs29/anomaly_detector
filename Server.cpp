@@ -27,7 +27,8 @@ void Server::initServer(int portGiven, int *serverFileDesc, struct sockaddr_in *
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
-    if (listen(*serverFileDesc, 3) < 0) {
+    // only 5 clients allowed
+    if (listen(*serverFileDesc, 5) < 0) {
         perror("listen");
         exit(EXIT_FAILURE);
     }
@@ -40,7 +41,6 @@ void sigalarm_handler(int) {
 Server::Server(int port) {
     this->shouldStop = false;
     this->port = port;
-    this->clientLimit = 5; //TODO : check for real value 😃
     initServer(port, &this->server_fd, &this->serverAddress);
 }
 
@@ -48,9 +48,9 @@ void Server::start(ClientHandler &ch) {
     this->t = new thread([&ch, this]() {
         signal(SIGALRM, sigalarm_handler);
         while (!this->shouldStop) {
-            int addrlen = sizeof(this->clientAddress);
-            alarm(3);
-            int clientID = accept(this->server_fd, (struct sockaddr *) &this->clientAddress,
+            int addrlen = sizeof(this->serverAddress);
+            alarm(1);
+            int clientID = accept(this->server_fd, (struct sockaddr *) &this->serverAddress,
                                   (socklen_t *) &addrlen);
             if (clientID > 0) {
 //                ThreadedServer newThread(++this->port, clientID);
@@ -68,6 +68,7 @@ void Server::start(ClientHandler &ch) {
     });
 }
 
+
 void Server::stop() {
     this->shouldStop = true;
     t->join(); // do not delete this!
@@ -76,24 +77,24 @@ void Server::stop() {
 Server::~Server() {
 }
 
-ThreadedServer::ThreadedServer(int port, int clientID) : Server(port) {
-    this->port = port;
-    this->clientID = clientID;
-    //initServer(port, &this->server_fd, &this->serverAddress);
-}
-
-void ThreadedServer::start(ClientHandler &ch) {
-    this->t = new thread([&ch, this]() {
-                             ch.handle(this->clientID);
-                             close(this->clientID);
-                         }
-    );
-}
-
-void ThreadedServer::stop() {
-    this->t->join();
-}
-
-ThreadedServer::~ThreadedServer() {
-};
+//ThreadedServer::ThreadedServer(int port, int clientID) : Server(port) {
+//    this->port = port;
+//    this->clientID = clientID;
+//    //initServer(port, &this->server_fd, &this->serverAddress);
+//}
+//
+//void ThreadedServer::start(ClientHandler &ch) {
+//    this->t = new thread([&ch, this]() {
+//                             ch.handle(this->clientID);
+//                             close(this->clientID);
+//                         }
+//    );
+//}
+//
+//void ThreadedServer::stop() {
+//    this->t->join();
+//}
+//
+//ThreadedServer::~ThreadedServer() {
+//};
 

@@ -19,15 +19,6 @@ void CLI::buildCommandVector() {
     this->commandsVector.push_back(resultAnomaly);
 }
 
-int returnOption(string input) {
-    if (1 != input.length() || 0 == isdigit(input[0]))
-        return -1;
-    int givenInput = stoi(input);
-    if (givenInput >= 1 && givenInput <= 6)
-        return givenInput;
-    return -1;
-}
-
 void CLI::start() {
     while (true) {
         this->dio->write("Welcome to the Anomaly Detection Server.\nPlease choose an option:\n");
@@ -37,9 +28,10 @@ void CLI::start() {
             currentIndex++;
         }
         this->dio->write(to_string(currentIndex) + ".exit\n");
-        int input;
-        input = returnOption(dio->read());
-        if (input == -1) {
+        float fInput;
+        this->dio->read(&fInput);
+        int input = (int) fInput;
+        if (input <= 0 || input > currentIndex) {
             this->dio->write("Option given is not valid");
             continue;
         }

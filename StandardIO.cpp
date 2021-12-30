@@ -20,5 +20,9 @@ void StandardIO::write(float f) {
     cout << f;
 }
 
-void StandardIO::read(float *f) {}
+void StandardIO::read(float *f) {
+    string readInput;
+    cin >> readInput;
+    *f = stof(readInput);
+}
 

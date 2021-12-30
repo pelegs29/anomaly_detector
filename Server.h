@@ -31,7 +31,6 @@ public:
 // implement on Server.cpp
 class Server {
     volatile bool shouldStop;
-    int clientLimit;
     int port;
 
 protected:
