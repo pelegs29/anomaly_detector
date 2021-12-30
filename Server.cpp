@@ -12,8 +12,6 @@
 
 
 void Server::initServer(int portGiven, int *serverFileDesc, struct sockaddr_in *address) {
-    int addrlen = sizeof(*address);
-
     // Creating socket file descriptor
     int sock_fd = socket(AF_INET, SOCK_STREAM, 0);
     if ((*serverFileDesc = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -25,8 +23,7 @@ void Server::initServer(int portGiven, int *serverFileDesc, struct sockaddr_in *
     address->sin_port = htons(portGiven);
 
     // Forcefully attaching socket to the portGiven 8080
-    if (bind(*serverFileDesc, (struct sockaddr *) &address,
-             sizeof(*address)) < 0) {
+    if (bind(*serverFileDesc, (struct sockaddr *) address, sizeof(*address)) < 0) {
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
@@ -40,14 +37,14 @@ void sigalarm_handler(int) {
     cout << "alarm fired" << endl;
 }
 
-Server::Server(int port)  {
+Server::Server(int port) {
     this->shouldStop = false;
     this->port = port;
     this->clientLimit = 5; //TODO : check for real value 😃
     initServer(port, &this->server_fd, &this->serverAddress);
 }
 
-void Server::start(ClientHandler &ch)  {
+void Server::start(ClientHandler &ch) {
     this->t = new thread([&ch, this]() {
         signal(SIGALRM, sigalarm_handler);
         while (!this->shouldStop) {
@@ -79,10 +76,10 @@ Server::~Server() {
 ThreadedServer::ThreadedServer(int port, int clientID) : Server(port) {
     this->port = port;
     this->clientID = clientID;
-    initServer(port, &this->server_fd, &this->serverAddress);
+    //initServer(port, &this->server_fd, &this->serverAddress);
 }
 
-void ThreadedServer::start(ClientHandler &ch)  {
+void ThreadedServer::start(ClientHandler &ch) {
     this->t = new thread([&ch, this]() {
                              ch.handle(this->clientID);
                              close(this->clientID);
