@@ -48,13 +48,16 @@ void Server::start(ClientHandler &ch) {
     this->t = new thread([&ch, this]() {
         signal(SIGALRM, sigalarm_handler);
         while (!this->shouldStop) {
-            int addrlen = sizeof(this->serverAddress);
+            int addrlen = sizeof(this->clientAddress);
             alarm(3);
-            int clientID = accept(this->server_fd, (struct sockaddr *) &this->serverAddress,
+            int clientID = accept(this->server_fd, (struct sockaddr *) &this->clientAddress,
                                   (socklen_t *) &addrlen);
             if (clientID > 0) {
-                ThreadedServer newThread(++this->port, clientID);
-                newThread.start(ch);
+//                ThreadedServer newThread(++this->port, clientID);
+//                newThread.start(ch);
+//                close(clientID);
+                ch.handle(clientID);
+                close(clientID);
             } else {
                 perror("accept");
                 exit(EXIT_FAILURE);
