@@ -22,7 +22,7 @@ void Server::initServer(int portGiven, int *serverFileDesc, struct sockaddr_in *
     address->sin_addr.s_addr = INADDR_ANY;
     address->sin_port = htons(portGiven);
 
-    // Forcefully attaching socket to the portGiven 8080
+    // Forcefully attaching socket to the portGiven
     if (bind(*serverFileDesc, (struct sockaddr *) address, sizeof(*address)) < 0) {
         perror("bind failed");
         exit(EXIT_FAILURE);
