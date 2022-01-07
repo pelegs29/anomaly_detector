@@ -1,7 +1,6 @@
 //* Author: 318509700 Peleg
 //*         207984956 Nadav
 
-#include <netinet/in.h>
 #include <unistd.h>
 #include <csignal>
 #include <sys/types.h>

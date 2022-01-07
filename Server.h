@@ -7,6 +7,7 @@
 
 #include <thread>
 #include "CLI.h"
+#include <netinet/in.h>
 
 using namespace std;
 
