@@ -46,10 +46,13 @@ Server::Server(int port) {
 
 void Server::start(ClientHandler &ch) {
     this->t = new thread([&ch, this]() {
+        // init the alarm settings
         signal(SIGALRM, sigalarm_handler);
         while (!this->shouldStop) {
             int addrlen = sizeof(this->serverAddress);
+            // start alarm timer
             alarm(1);
+            // if no client reached the server in 1 sec -> fire the alarm
             int clientID = accept(this->server_fd, (struct sockaddr *) &this->serverAddress,
                                   (socklen_t *) &addrlen);
             if (clientID > 0) {
@@ -62,6 +65,7 @@ void Server::start(ClientHandler &ch) {
                 perror("accept");
                 exit(EXIT_FAILURE);
             }
+            // cancel alarm
             alarm(0);
         }
         close(this->server_fd);
@@ -71,6 +75,7 @@ void Server::start(ClientHandler &ch) {
 
 void Server::stop() {
     this->shouldStop = true;
+    // join all the threads
     t->join(); // do not delete this!
 }
 

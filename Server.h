@@ -21,6 +21,7 @@ public:
 class AnomalyDetectionHandler : public ClientHandler {
 public:
     virtual void handle(int clientID) {
+        // init socketID with the client file descriptor
         SocketIO sockIO(clientID);
         CLI handlerAPI(&sockIO);
         handlerAPI.start();
